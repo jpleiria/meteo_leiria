@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>MeteoLeiria — Dashboard</title>
+<style>
+:root{
+  --bg:#080f1a;--bg2:#0c1624;--bg3:#111e30;--bg4:#16273d;
+  --card:#0e1c2e;--border:#1d3550;--border2:#254463;
+  --accent:#2196f3;--accent2:#64b5f6;
+  --green:#4caf50;--text:#e8f4fd;--text2:#b0c8df;--text3:#7a9db8;
+  --font:'Segoe UI',system-ui,sans-serif;--r:10px;--r2:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font);overflow:hidden;font-size:15px}
+body{display:flex;flex-direction:column}
+#app{flex:1;display:flex;flex-direction:column;min-height:0}
+
+#hdr{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 18px;height:54px;
+  display:flex;align-items:center;justify-content:space-between;flex-shrink:0;gap:16px}
+.hdr-left{display:flex;align-items:center;gap:12px}
+.logo{width:36px;height:36px;background:linear-gradient(135deg,#1565c0,#42a5f5);
+  border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.site-title{font-size:1.15rem;font-weight:700;color:#fff}
+.site-sub{font-size:.76rem;color:var(--text3);margin-top:1px}
+#clock{font-size:1.75rem;font-weight:300;color:#fff;letter-spacing:3px;font-variant-numeric:tabular-nums}
+#clock-date{font-size:.74rem;color:var(--text3);text-align:center;margin-top:1px}
+.hdr-right{display:flex;align-items:center;gap:9px}
+.btn{background:var(--bg3);border:1px solid var(--border2);color:var(--text2);
+  padding:5px 12px;border-radius:7px;font-size:.78rem;cursor:pointer;transition:all .2s;white-space:nowrap}
+.btn:hover,.btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+#update-dot{width:8px;height:8px;border-radius:50%;background:var(--green);
+  display:inline-block;margin-right:5px;animation:blink 3s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+#update-time{font-size:.74rem;color:var(--text3)}
+
+#info-bar{background:var(--bg2);border-bottom:1px solid var(--border);
+  padding:5px 18px;display:flex;align-items:center;flex-shrink:0}
+.ib{display:flex;align-items:center;gap:6px;padding:0 12px;
+  border-right:1px solid var(--border);font-size:.8rem;color:var(--text3)}
+.ib:first-child{padding-left:0}.ib:last-child{border-right:none;margin-left:auto}
+.ib-val{color:var(--text);font-weight:600;font-size:.86rem}
+
+#solar-bar{background:var(--bg3);border-bottom:1px solid var(--border);
+  padding:4px 18px;display:flex;align-items:center;gap:12px;flex-shrink:0}
+#solar-track{flex:1;height:6px;background:var(--bg4);border-radius:3px;position:relative;overflow:visible}
+#solar-fill{height:100%;background:linear-gradient(to right,#e65100,#ffc107,#fff176);border-radius:3px}
+#solar-sun{position:absolute;top:50%;transform:translate(-50%,-50%);font-size:14px}
+.solar-lbl{font-size:.76rem;color:var(--text3);white-space:nowrap;font-weight:500}
+
+/* GRID: col3 gets more space for fire */
+#grid{flex:1;display:grid;
+  grid-template-columns:1.9fr 1fr 1.55fr;
+  grid-template-rows:1.3fr 0.7fr;
+  gap:9px;padding:9px;min-height:0;overflow:hidden}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r2);
+  padding:12px;display:flex;flex-direction:column;overflow:hidden;min-height:0}
+.card-title{font-size:.72rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;
+  margin-bottom:8px;display:flex;align-items:center;gap:6px;flex-shrink:0;font-weight:600}
+
+/* TEMPERATURE */
+#c-temp{grid-column:1;grid-row:1;position:relative}
+#c-temp::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;
+  background:radial-gradient(circle,rgba(33,150,243,.07) 0%,transparent 70%);border-radius:50%;pointer-events:none}
+.temp-hero{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px}
+.temp-icon-big{font-size:3.8rem;line-height:1;flex-shrink:0}
+.temp-number{font-size:5.2rem;font-weight:200;line-height:1;color:#fff;letter-spacing:-3px}
+.temp-c{font-size:2rem;color:var(--accent2);margin-top:10px}
+.temp-right{flex:1;text-align:right}
+.temp-desc{font-size:.95rem;color:var(--text2);margin-bottom:4px;font-weight:500}
+.temp-feels{font-size:.82rem;color:var(--text3)}.temp-feels b{color:var(--text2)}
+.minmax-row{display:flex;gap:7px;margin-top:7px;justify-content:flex-end}
+.mm{background:var(--bg4);border-radius:7px;padding:5px 12px;text-align:center}
+.mm-lbl{font-size:.65rem;color:var(--text3);text-transform:uppercase;letter-spacing:.5px}
+.mm-val{font-size:1.05rem;font-weight:600}
+.mm-val.mx{color:#ff7043}.mm-val.mn{color:var(--accent2)}
+#temp-chart-wrap{flex:1;position:relative;min-height:0}
+#temp-chart{width:100%;height:100%}
+
+/* FORECAST */
+#c-forecast{grid-column:1;grid-row:2;gap:8px}
+.fcast-days{display:flex;gap:6px;align-items:stretch}
+.fday{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);
+  display:flex;flex-direction:column;align-items:center;padding:7px 3px;gap:2px}
+.fday.today{border-color:var(--accent);background:var(--bg4)}
+.fd-name{font-size:.67rem;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;font-weight:600}
+.fd-icon{font-size:1.4rem}.fd-max{font-size:.95rem;font-weight:700;color:#ff7043}
+.fd-min{font-size:.82rem;color:var(--accent2);font-weight:600}.fd-rain{font-size:.64rem;color:var(--text3)}
+#hourly-scroll{display:flex;gap:5px;overflow-x:auto;flex:1;align-items:center;padding-bottom:2px}
+#hourly-scroll::-webkit-scrollbar{height:3px}
+#hourly-scroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.hour{flex:0 0 auto;background:var(--bg3);border:1px solid var(--border);border-radius:7px;
+  padding:6px 8px;text-align:center;min-width:52px}
+.hour.now{border-color:var(--accent);background:var(--bg4)}
+.h-time{font-size:.67rem;color:var(--text3);font-weight:600}
+.h-icon{font-size:1.1rem}.h-temp{font-size:.85rem;font-weight:700}
+.h-prob{font-size:.62rem;color:var(--accent2)}
+
+/* WIND — improved compass with FROM indicator */
+#c-wind{grid-column:2;grid-row:1}
+.wind-compass-wrap{position:relative;width:120px;height:120px;margin:2px auto 4px;flex-shrink:0}
+.wind-compass-wrap svg{width:100%;height:100%}
+.wind-speed-big{font-size:2rem;font-weight:300;color:#fff;text-align:center;line-height:1}
+.wind-unit-lbl{font-size:.78rem;color:var(--text3);text-align:center;font-weight:600}
+.wind-from-label{font-size:.8rem;color:var(--text2);text-align:center;margin-top:3px;font-weight:500}
+.wind-gust{font-size:.78rem;color:var(--text3);text-align:center;margin-top:2px}
+.wind-gust b{color:var(--text2)}
+.gauges-row{display:flex;gap:6px;margin-top:6px}
+.gauge-wrap{display:flex;flex-direction:column;align-items:center;flex:1}
+.gauge-wrap svg{width:100%;max-width:110px;height:auto}
+.gauge-lbl{font-size:.7rem;color:var(--text3);margin-top:1px;text-align:center;font-weight:600}
+
+/* PRESSURE */
+#c-pressure{grid-column:2;grid-row:2;display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.p-block{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:8px 6px}
+.p-icon{font-size:1.4rem;margin-bottom:3px}
+.p-label{font-size:.67rem;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;font-weight:600}
+.p-val{font-size:1.35rem;font-weight:600;color:#fff}.p-unit{font-size:.68rem;color:var(--text3)}
+.p-trend{font-size:.7rem;margin-top:3px;font-weight:600}
+
+/* AQI — tiny strip */
+#c-aqi{grid-column:3;grid-row:1;flex-direction:row;align-items:center;gap:14px;
+  padding:10px 16px}
+.aqi-big-num{font-size:3.5rem;font-weight:200;line-height:1;min-width:80px}
+.aqi-right{flex:1}
+.aqi-label{font-size:1.1rem;font-weight:700;margin-bottom:3px}
+.aqi-sub{font-size:.72rem;color:var(--text3)}
+.aqi-bar-wrap{margin-top:8px}
+.aqi-bar-track{height:6px;background:linear-gradient(to right,#4caf50,#8bc34a,#ffc107,#ff9800,#f44336,#9c27b0);
+  border-radius:3px;position:relative}
+.aqi-bar-marker{position:absolute;top:50%;width:10px;height:10px;background:#fff;border-radius:50%;
+  transform:translate(-50%,-50%);transition:left .8s;box-shadow:0 0 4px rgba(0,0,0,.5)}
+
+/* FIRE — col3 row2 — spans full row2 of col3 — LARGE */
+#c-fire{grid-column:3;grid-row:2;padding:10px 12px}
+.fire-body{display:flex;gap:10px;height:100%}
+/* map takes most space */
+#map-side{flex:1;min-width:0;display:flex;flex-direction:column}
+.map-title{font-size:.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;
+  font-weight:600;margin-bottom:3px;flex-shrink:0}
+#map-container{flex:1;min-height:0;position:relative;overflow:hidden;border-radius:6px}
+#district-map{width:100%;height:100%}
+.map-legend{display:flex;gap:5px;flex-wrap:wrap;margin-top:3px;flex-shrink:0}
+.leg-item{display:flex;align-items:center;gap:3px;font-size:.6rem;color:var(--text3)}
+.leg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
+/* right sidebar: badges + list + lightning */
+#fire-sidebar{width:130px;flex-shrink:0;display:flex;flex-direction:column;gap:5px}
+.fire-block{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:6px;text-align:center}
+.fire-scope{font-size:.6rem;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;font-weight:600;margin-bottom:2px}
+.fire-badge{font-size:.75rem;font-weight:700;padding:3px 7px;border-radius:5px;margin-bottom:2px;width:100%;text-align:center}
+.fire-fwi{font-size:.65rem;color:var(--text3)}.fire-desc{font-size:.65rem;font-weight:600}
+
+/* municipality list — small */
+#mun-list{flex:1;overflow-y:auto;background:var(--bg3);border:1px solid var(--border);
+  border-radius:var(--r);padding:5px 6px;min-height:0}
+#mun-list::-webkit-scrollbar{width:3px}
+#mun-list::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.mun-list-item{display:flex;align-items:center;gap:5px;padding:2px 0;border-bottom:1px solid var(--border);font-size:.68rem}
+.mun-list-item:last-child{border-bottom:none}
+.mli-dot{font-size:.6rem;flex-shrink:0;transition:color .4s}
+.mli-name{flex:1;color:var(--text2);overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.mli-badge{font-size:.6rem;font-weight:700;padding:1px 4px;border-radius:3px;flex-shrink:0;background:var(--bg4)}
+
+/* lightning compact */
+.lightning-block{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);
+  padding:6px;flex-shrink:0}
+.l-title{font-size:.6rem;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;font-weight:600;margin-bottom:4px;text-align:center}
+.l-row{display:flex;gap:3px}
+.l-cell{flex:1;text-align:center;background:var(--bg4);border-radius:4px;padding:3px 2px}
+.l-min{font-size:.55rem;color:var(--text3)}.l-val{font-size:.85rem;font-weight:700}
+
+/* SVG MAP */
+.mun-path-leiria{fill:#1e4a7a;stroke:#2196f3;stroke-width:1.6;cursor:pointer;
+  transition:fill .4s;filter:drop-shadow(0 0 6px rgba(33,150,243,.4))}
+.mun-path-leiria:hover{fill:#2660a0}
+.mun-lbl-leiria{fill:#90caf9;font-size:11px;font-weight:700;
+  font-family:'Segoe UI',sans-serif;pointer-events:none}
+.mun-dot-g{cursor:pointer}
+.mun-dot{stroke:#0a1520;stroke-width:.8;transition:fill .4s}
+.mun-dot-g:hover .mun-dot{stroke:#fff;stroke-width:1.5}
+.mun-dot-lbl{fill:#e0f0ff;font-size:5.5px;font-family:'Segoe UI',sans-serif;
+  pointer-events:none;font-weight:700}
+
+#mtt{display:none;position:absolute;background:#0a1828;border:1px solid var(--accent);
+  border-radius:8px;padding:7px 11px;font-size:.76rem;pointer-events:none;z-index:10;
+  white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.5)}
+#mtt-name{font-weight:700;color:#fff;font-size:.82rem;margin-bottom:2px}
+#mtt-risk{font-weight:600}#mtt-fwi{font-size:.68rem;color:var(--text3);margin-top:1px}
+
+.pulse{animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:.3}50%{opacity:.65}}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+</style>
+</head>
+<body>
+<div id="app">
+
+<div id="hdr">
+  <div class="hdr-left">
+    <div class="logo">🌤</div>
+    <div>
+      <div class="site-title">MeteoLeiria</div>
+      <div class="site-sub">Dashboard Meteorológico · Leiria, Portugal · 39.74°N 8.81°W</div>
+    </div>
+  </div>
+  <div style="text-align:center">
+    <div id="clock">--:--:--</div>
+    <div id="clock-date">--</div>
+  </div>
+  <div class="hdr-right">
+    <span><span id="update-dot"></span><span id="update-time">A carregar...</span></span>
+    <button class="btn" onclick="refreshAll()">↺ Atualizar</button>
+    <button class="btn" id="fs-btn" onclick="toggleFS()">⛶ Ecrã inteiro</button>
+  </div>
+</div>
+
+<div id="info-bar">
+  <div class="ib">🌅 Nascer&nbsp;<span class="ib-val" id="sunrise">--:--</span></div>
+  <div class="ib">🌇 Pôr&nbsp;<span class="ib-val" id="sunset">--:--</span></div>
+  <div class="ib">💧 Humidade&nbsp;<span class="ib-val" id="hum-bar">--%</span></div>
+  <div class="ib">🌡 Orvalho&nbsp;<span class="ib-val" id="dew">--°C</span></div>
+  <div class="ib">🌕&nbsp;<span class="ib-val" id="moon">--</span></div>
+  <div class="ib">⏱ Próx. atualiz.&nbsp;<span class="ib-val" id="next-update">5:00</span></div>
+</div>
+
+<div id="solar-bar">
+  <span class="solar-lbl" id="solar-sr">--:--</span>
+  <div id="solar-track">
+    <div id="solar-fill" style="width:0%"></div>
+    <div id="solar-sun" style="left:0%">☀️</div>
+  </div>
+  <span class="solar-lbl" id="solar-ss">--:--</span>
+  <span class="solar-lbl" style="margin-left:10px;color:var(--text2)" id="solar-dur">Duração: --h --m</span>
+</div>
+
+<div id="grid">
+
+  <!-- C1R1 TEMPERATURA -->
+  <div class="card" id="c-temp">
+    <div class="card-title">🌡 Temperatura atual · Leiria</div>
+    <div class="temp-hero">
+      <div class="temp-icon-big pulse" id="w-icon">⏳</div>
+      <div style="display:flex;align-items:flex-start">
+        <div class="temp-number pulse" id="temp">--</div>
+        <div class="temp-c">°C</div>
+      </div>
+      <div class="temp-right" style="flex:1">
+        <div class="temp-desc" id="w-desc">A carregar...</div>
+        <div class="temp-feels">Sensação: <b id="feels">--</b>°C</div>
+        <div class="minmax-row">
+          <div class="mm"><div class="mm-lbl">Máx</div><div class="mm-val mx" id="tmax">--°</div></div>
+          <div class="mm"><div class="mm-lbl">Mín</div><div class="mm-val mn" id="tmin">--°</div></div>
+        </div>
+      </div>
+    </div>
+    <div id="temp-chart-wrap"><canvas id="temp-chart"></canvas></div>
+  </div>
+
+  <!-- C1R2 PREVISÃO -->
+  <div class="card" id="c-forecast" style="gap:8px">
+    <div>
+      <div class="card-title">📅 Previsão 5 dias</div>
+      <div class="fcast-days" id="fcast-days">
+        <div class="fday pulse"><div class="fd-name">--</div><div class="fd-icon">⏳</div><div class="fd-max">--°</div><div class="fd-min">--°</div></div>
+      </div>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;min-height:0">
+      <div class="card-title" style="margin-bottom:4px">🕐 Próximas 24h</div>
+      <div id="hourly-scroll"></div>
+    </div>
+  </div>
+
+  <!-- C2R1 VENTO — improved FROM indicator -->
+  <div class="card" id="c-wind">
+    <div class="card-title">💨 Vento</div>
+    <div class="wind-compass-wrap">
+      <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+        <!-- rings -->
+        <circle cx="60" cy="60" r="57" fill="none" stroke="#1d3550" stroke-width="1.5"/>
+        <circle cx="60" cy="60" r="48" fill="#0a1520" stroke="#1d3550" stroke-width="1"/>
+        <!-- cardinal labels -->
+        <text x="60" y="10" text-anchor="middle" fill="#90caf9" font-size="10" font-weight="700">N</text>
+        <text x="113" y="64" text-anchor="middle" fill="#6a90a8" font-size="10">E</text>
+        <text x="60" y="118" text-anchor="middle" fill="#6a90a8" font-size="10">S</text>
+        <text x="7" y="64" text-anchor="middle" fill="#6a90a8" font-size="10">O</text>
+        <!-- intercardinal ticks -->
+        <line x1="60" y1="15" x2="60" y2="20" stroke="#1d3550" stroke-width="1.5"/>
+        <line x1="105" y1="60" x2="100" y2="60" stroke="#1d3550" stroke-width="1.5"/>
+        <line x1="60" y1="105" x2="60" y2="100" stroke="#1d3550" stroke-width="1.5"/>
+        <line x1="15" y1="60" x2="20" y2="60" stroke="#1d3550" stroke-width="1.5"/>
+        <!-- WIND ARROW: points FROM origin (tail at wind source, head at center)
+             The arrow shows WHERE the wind is coming FROM.
+             Rotated by wind direction so tail points to source direction. -->
+        <g id="wind-needle-g" transform="rotate(0,60,60)">
+          <!-- tail (origin/source) — solid color, fat end -->
+          <polygon points="60,14 55,60 60,52 65,60" fill="#2196f3" opacity="0.9"/>
+          <!-- head (towards center) — grey, to show wind travels inward -->
+          <polygon points="60,106 55,60 60,68 65,60" fill="#1d3550"/>
+          <!-- "FROM" label on the active (blue) side -->
+          <text x="60" y="30" text-anchor="middle" fill="#90caf9" font-size="6" font-weight="700">VENTO DE</text>
+        </g>
+        <!-- center dot -->
+        <circle cx="60" cy="60" r="5" fill="#0a1520" stroke="#2196f3" stroke-width="2"/>
+      </svg>
+    </div>
+    <!-- explicit from/to text -->
+    <div class="wind-speed-big pulse" id="wind-spd">--</div>
+    <div class="wind-unit-lbl">km/h</div>
+    <div class="wind-from-label">Vento de <b id="wind-dir" style="color:var(--accent2)">--</b></div>
+    <div class="wind-gust">Rajada: <b id="wind-gust">--</b> km/h</div>
+    <div class="gauges-row">
+      <div class="gauge-wrap">
+        <svg viewBox="0 0 100 60" xmlns="http://www.w3.org/2000/svg">
+          <path d="M10,55 A40,40 0 0,1 90,55" fill="none" stroke="#1d3550" stroke-width="9" stroke-linecap="round"/>
+          <path id="hum-arc" d="M10,55 A40,40 0 0,1 90,55" fill="none" stroke="#2196f3" stroke-width="9"
+            stroke-linecap="round" stroke-dasharray="0 126" style="transition:stroke-dasharray 1s"/>
+          <text x="50" y="50" text-anchor="middle" fill="#e8f4fd" font-size="15" id="hum-g-val">--%</text>
+        </svg>
+        <div class="gauge-lbl">💧 Humidade</div>
+      </div>
+      <div class="gauge-wrap">
+        <svg viewBox="0 0 100 60" xmlns="http://www.w3.org/2000/svg">
+          <path d="M10,55 A40,40 0 0,1 90,55" fill="none" stroke="#1d3550" stroke-width="9" stroke-linecap="round"/>
+          <path id="uv-arc" d="M10,55 A40,40 0 0,1 90,55" fill="none" stroke="#ffc107" stroke-width="9"
+            stroke-linecap="round" stroke-dasharray="0 126" style="transition:stroke-dasharray 1s"/>
+          <text x="50" y="50" text-anchor="middle" fill="#e8f4fd" font-size="15" id="uv-g-val">--</text>
+        </svg>
+        <div class="gauge-lbl">☀️ UV</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- C2R2 PRESSÃO & MÉTRICAS -->
+  <div class="card" id="c-pressure">
+    <div class="card-title" style="grid-column:1/-1">🔵 Pressão &amp; Métricas</div>
+    <div class="p-block">
+      <div class="p-icon">🔵</div><div class="p-label">Pressão</div>
+      <div class="p-val pulse" id="pressure">----</div><div class="p-unit">hPa</div>
+      <div class="p-trend" id="pressure-trend">--</div>
+    </div>
+    <div class="p-block">
+      <div class="p-icon">🌧</div><div class="p-label">Chuva</div>
+      <div class="p-val pulse" id="rain">--</div><div class="p-unit">mm hoje</div>
+      <div class="p-trend" id="rain-sub">--</div>
+    </div>
+    <div class="p-block">
+      <div class="p-icon">👁</div><div class="p-label">Visibilidade</div>
+      <div class="p-val pulse" id="vis">--</div><div class="p-unit">km</div>
+      <div class="p-trend" id="vis-lbl">--</div>
+    </div>
+    <div class="p-block">
+      <div class="p-icon">💧</div><div class="p-label">Orvalho</div>
+      <div class="p-val pulse" id="dew2">--</div><div class="p-unit">°C</div>
+      <div class="p-trend" id="dew-lbl">--</div>
+    </div>
+  </div>
+
+  <!-- C3R1 AQI — thin strip, only European AQI index -->
+  <div class="card" id="c-aqi">
+    <div class="card-title">🌍 Qualidade do Ar · Índice AQI Europeu</div>
+    <div class="aqi-big-num pulse" id="aqi-num">--</div>
+    <div class="aqi-right">
+      <div class="aqi-label pulse" id="aqi-desc">--</div>
+      <div class="aqi-sub">Open-Meteo · Leiria</div>
+      <div class="aqi-bar-wrap">
+        <div class="aqi-bar-track">
+          <div class="aqi-bar-marker" id="aqi-marker" style="left:0%"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:3px;font-size:.6rem;color:var(--text3)">
+          <span>0</span><span>20</span><span>40</span><span>60</span><span>80</span><span>100+</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- C3R2 RISCO INCÊNDIO — LARGE -->
+  <div class="card" id="c-fire">
+    <div class="card-title">🔥 Risco de Incêndio · Distrito de Leiria</div>
+    <div class="fire-body">
+
+      <!-- MAP: Leiria real boundary, large -->
+      <div id="map-side">
+        <div class="map-title">🗺 Concelho de Leiria</div>
+        <div id="map-container">
+          <div id="mtt"><div id="mtt-name"></div><div id="mtt-risk"></div><div id="mtt-fwi"></div></div>
+          <svg id="district-map" viewBox="0 0 320 280" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+            <rect width="320" height="280" fill="#060e18" rx="4"/>
+            <!-- Leiria real boundary from CAOP GeoJSON -->
+            <path id="mp-leiria" class="mun-path-leiria" data-name="Leiria" data-fwi="" data-offset="0"
+              d="M93.26,29.29 L107.56,33.95 L118.28,37.8 L149.42,49.38 L165.31,55.93 L170.34,57.6 L173.87,59.56 L177.52,62.12 L182.6,64.3 L186.54,69.6 L187.99,73.64 L189.05,77.95 L189.63,81.37 L191.98,87.08 L203.72,98.15 L207.7,106.71 L213.38,109.89 L218.18,112.41 L223.04,112.36 L227.26,109.86 L232.02,109.92 L237.77,110.26 L242.16,113.2 L248.76,116.55 L252.06,118.37 L256.14,120.41 L259.94,121.96 L267.42,125.92 L273.03,129.09 L276.6,131.5 L282.99,136.27 L283.25,142.23 L277.31,142.31 L274.13,143.92 L271.68,145.49 L267.3,146.59 L265.26,147.9 L261.55,148.8 L260.46,149.62 L258.53,150.51 L254.63,151.45 L252.22,152.19 L249.65,152.91 L248.06,152.89 L246.29,153.46 L245.94,154.21 L245.25,155.28 L244.69,155.97 L243.79,156.64 L243.67,158.18 L243.86,159.08 L244.01,160.3 L243.89,161.43 L244.32,162.89 L243.99,163.89 L243.68,164.54 L243.71,165.39 L243.62,165.87 L243.71,166.72 L243.73,167.62 L243.75,168.23 L243.4,169.04 L243.09,169.65 L242.89,170.23 L242.54,171.44 L243.23,172.65 L243.95,173.13 L243.99,174.33 L244.54,175.41 L244.9,176.86 L245.31,179.09 L247.9,181.01 L248.89,184.44 L251.14,186.22 L254.42,187.62 L252.65,189.21 L249.01,189.23 L244.95,190.76 L243.24,193.12 L243.95,196.37 L244.62,199.69 L246.13,199.06 L247.93,198.99 L250.29,200.33 L252.25,200.22 L254.43,201.13 L256.52,201.93 L258.25,202.61 L260.67,203.9 L262.99,203.72 L265.13,204.04 L267.14,204.69 L268.94,204.82 L271.28,205.02 L272.84,205.93 L274.48,207.06 L277.53,209.55 L275.94,211.41 L273.47,214.72 L271.06,215.37 L269.98,218.18 L268.31,220.86 L270.13,223.26 L269.4,226.9 L266.82,230.45 L267.29,231.83 L265.7,233.42 L263.89,234.58 L262.19,235.11 L259.98,235.54 L257.91,236.18 L255.97,237.14 L253.51,238.42 L250.99,239.59 L248.58,240.48 L246.25,240.9 L245.57,243.37 L243.75,244.35 L241.6,244.5 L239.5,245.58 L236.61,246.64 L234.27,247.06 L231.15,248.27 L229.25,247.73 L228.02,248.59 L227.73,249.94 L225.09,245.92 L208.63,228.07 L195.76,225.32 L192.98,223.47 L187.87,221.22 L169.48,225.55 L157.99,223.35 L154.6,222.3 L151.4,218.55 L149.75,215.43 L147.37,212.29 L147.5,209.96 L145.46,209.3 L144.1,209.3 L143.15,209.63 L141.84,210.11 L138.85,210.38 L136.91,209.88 L134.17,209.72 L132.88,211.39 L131.96,212.23 L129.78,214.84 L127.64,215.6 L126.16,216.81 L123.49,218.19 L120.85,218.94 L118.48,220.22 L116.64,220.77 L115.44,221.89 L113.05,221.99 L111.29,222.83 L109.38,224.88 L107.22,227.24 L107.11,236.7 L104.61,240.15 L103.28,240.91 L101.32,241.08 L100.6,241.16 L99.6,242.04 L99.49,242.24 L97.11,242.56 L96.09,242.42 L95.36,242.32 L94.35,242.3 L94.25,242.52 L94.08,242.87 L94.0,243.31 L93.86,243.66 L93.63,244.04 L93.42,244.24 L93.06,244.51 L92.39,244.93 L92.14,245.21 L92.03,245.44 L91.76,245.9 L91.69,246.36 L91.7,246.85 L91.18,246.83 L90.71,246.77 L90.27,246.98 L89.68,247.04 L89.36,247.12 L88.98,247.3 L88.46,247.58 L88.02,247.79 L87.59,248.09 L87.27,248.23 L86.97,248.36 L86.55,248.52 L86.06,248.83 L85.61,249.02 L84.98,249.19 L84.42,249.17 L83.76,249.32 L83.35,249.5 L82.88,249.68 L82.37,249.62 L81.84,249.69 L81.51,249.86 L81.1,249.89 L80.68,250.05 L80.44,250.25 L80.01,250.37 L79.6,250.22 L78.66,250.25 L78.36,250.47 L77.81,250.56 L77.51,250.71 L77.1,250.1 L76.97,249.12 L76.14,247.18 L77.1,244.44 L77.89,242.03 L76.79,241.2 L77.44,240.9 L74.55,239.55 L74.32,238.58 L73.82,237.54 L74.07,236.63 L74.43,236.09 L74.84,235.16 L74.69,234.0 L74.72,233.09 L74.03,232.28 L74.19,231.38 L74.53,230.34 L74.74,228.86 L73.98,228.78 L72.9,229.26 L71.49,229.87 L70.12,229.83 L68.95,229.88 L67.56,229.89 L66.08,228.37 L63.84,227.5 L62.09,226.34 L59.54,225.41 L57.4,224.54 L56.11,219.98 L59.66,214.89 L61.72,213.19 L60.2,212.1 L61.44,210.14 L65.79,208.86 L70.23,202.7 L69.71,195.33 L74.34,195.95 L73.92,194.86 L73.18,192.21 L74.32,191.38 L76.58,189.44 L78.19,188.21 L84.46,188.24 L91.04,185.72 L95.82,179.84 L102.14,176.15 L102.3,170.43 L103.21,166.44 L105.27,162.72 L105.35,162.01 L105.5,160.83 L106.66,159.69 L107.7,158.42 L108.04,156.01 L95.67,146.87 L91.31,147.59 L85.58,147.36 L82.09,144.86 L81.09,139.83 L79.97,132.81 L82.0,130.31 L86.43,124.44 L85.34,112.29 L78.44,107.91 L70.79,99.55 L65.27,90.22 L71.24,90.1 L78.25,87.19 L84.01,85.59 L85.56,83.93 L88.08,81.13 L89.96,78.62 L62.24,71.17 L36.75,73.31 L39.98,65.84 L43.28,58.5 L45.96,53.53 L46.91,48.92 L50.72,42.42 L54.17,35.37 Z"/>
+            <text x="156.5" y="195.3" text-anchor="middle" class="mun-lbl-leiria">Leiria</text>
+            <!-- Neighbouring concelhos that fall within viewport -->
+
+          <g id="mdot-batalha" class="mun-dot-g" data-name="Batalha" data-fwi="" data-offset="0.2" transform="translate(137.02,234.35)">
+            <circle r="14" class="mun-dot"/>
+            <text y="4" text-anchor="middle" class="mun-dot-lbl">Batalha</text>
+          </g>
+          <g id="mdot-marinha" class="mun-dot-g" data-name="Marinha Grande" data-fwi="" data-offset="-0.5" transform="translate(61.54,172.82)">
+            <circle r="14" class="mun-dot"/>
+            <text y="4" text-anchor="middle" class="mun-dot-lbl">M. Grande</text>
+          </g>
+          <g id="mdot-pombal" class="mun-dot-g" data-name="Pombal" data-fwi="" data-offset="1.8" transform="translate(281.93,52.19)">
+            <circle r="14" class="mun-dot"/>
+            <text y="4" text-anchor="middle" class="mun-dot-lbl">Pombal</text>
+          </g>
+          </svg>
+        </div>
+        <div class="map-legend">
+          <div class="leg-item"><div class="leg-dot" style="background:#2e7d32"></div>Reduzido</div>
+          <div class="leg-item"><div class="leg-dot" style="background:#f9a825"></div>Moderado</div>
+          <div class="leg-item"><div class="leg-dot" style="background:#e65100"></div>Elevado</div>
+          <div class="leg-item"><div class="leg-dot" style="background:#b71c1c"></div>Muito elev.</div>
+          <div class="leg-item"><div class="leg-dot" style="background:#880e4f"></div>Máximo</div>
+        </div>
+      </div>
+
+      <!-- SIDEBAR -->
+      <div id="fire-sidebar">
+        <div class="fire-block" id="fire-mun-block">
+          <div class="fire-scope">Município de Leiria</div>
+          <div class="fire-badge pulse" id="fire-mun-badge">A carregar</div>
+          <div class="fire-fwi" id="fire-mun-fwi">FWI: --</div>
+          <div class="fire-desc" id="fire-mun-desc">--</div>
+        </div>
+        <div class="fire-block" id="fire-dist-block">
+          <div class="fire-scope">Distrito de Leiria</div>
+          <div class="fire-badge pulse" id="fire-dist-badge">A carregar</div>
+          <div class="fire-fwi" id="fire-dist-fwi">FWI: --</div>
+          <div class="fire-desc" id="fire-dist-desc">--</div>
+        </div>
+        <!-- List of all 15 other concelhos -->
+        <div id="mun-list">
+
+          <div class="mun-list-item" id="mli-alcobaca" data-name="Alcobaça" data-fwi="" data-offset="-0.8">
+            <span class="mli-dot" id="mli-dot-alcobaca">●</span>
+            <span class="mli-name">Alcobaça</span>
+            <span class="mli-badge" id="mli-badge-alcobaca">--</span>
+          </div>
+          <div class="mun-list-item" id="mli-alvaiazere" data-name="Alvaiázere" data-fwi="" data-offset="2.0">
+            <span class="mli-dot" id="mli-dot-alvaiazere">●</span>
+            <span class="mli-name">Alvaiázere</span>
+            <span class="mli-badge" id="mli-badge-alvaiazere">--</span>
+          </div>
+          <div class="mun-list-item" id="mli-ansiao" data-name="Ansião" data-fwi="" data-offset="2.5">
+            <span class="mli-dot" id="mli-dot-ansiao">●</span>
+            <span class="mli-name">Ansião</span>
+            <span class="mli-badge" id="mli-badge-ansiao">--</span>
+          </div>
+          <div class="mun-list-item" id="mli-batalha" data-name="Batalha" data-fwi="" data-offset="0.2">
+            <span class="mli-dot" id="mli-dot-batalha">●</span>
+            <span class="mli-name">Batalha</span>
+            <span class="mli-badge" id="mli-badge-batalha">--</span>
+          </div>
+          <div class="mun-list-item" id="mli-bombarral" data-name="Bombarral" data-fwi="" data-offset="-1.5">
+            <span class="mli-dot" id="mli-dot-bombarral">●</span>
+            <span class="mli-name">Bombarral</span>
+            <span class="mli-badge" id="mli-badge-bombarral">--</span>
+          </div>
+          <div class="mun-list-item" id="mli-caldas" data-name="Caldas da Rainha" data-fwi="" data-offset="-1.2">
+            <span class="mli-dot" id="mli-dot-caldas">●</span>
+            <span class="mli-name">Caldas da Rainha</span>
+            <span class="mli-badge" id="mli-badge-caldas">--</span>
+          </div>
+          <div class="mun-list-item" id="mli-castanheira" data-name="Castanheira de Pêra" data-fwi="" data-offset="4.0">
+            <span class="mli-dot" id="mli-dot-castanheira">●</span>
+            <span class="mli-name">Castanheira de Pêra</span>
+            <span class="mli-badge" id="mli-badge-castanheira">--</span>
+          </div>
+          <div class="mun-list-item" id="mli-figueiro" data-name="Figueiró dos Vinhos" data-fwi="" data-offset="3.5">
+            <span class="mli-dot" id="mli-dot-figueiro">●</span>
+            <span class="mli-name">Figueiró dos Vinhos</span>
+            <span class="mli-badge" id="mli-badge-figueiro">--</span>
+          </div>
+          <div class="mun-list-item" id="mli-marinha" data-name="Marinha Grande" data-fwi="" data-offset="-0.5">
+            <span class="mli-dot" id="mli-dot-marinha">●</span>
+            <span class="mli-name">Marinha Grande</span>
+            <span class="mli-badge" id="mli-badge-marinha">--</span>
+          </div>
+          <div class="mun-list-item" id="mli-nazare" data-name="Nazaré" data-fwi="" data-offset="-1.0">
+            <span class="mli-dot" id="mli-dot-nazare">●</span>
+            <span class="mli-name">Nazaré</span>
+            <span class="mli-badge" id="mli-badge-nazare">--</span>
+          </div>
+          <div class="mun-list-item" id="mli-obidos" data-name="Óbidos" data-fwi="" data-offset="-1.3">
+            <span class="mli-dot" id="mli-dot-obidos">●</span>
+            <span class="mli-name">Óbidos</span>
+            <span class="mli-badge" id="mli-badge-obidos">--</span>
+          </div>
+          <div class="mun-list-item" id="mli-pedrogao" data-name="Pedrógão Grande" data-fwi="" data-offset="4.5">
+            <span class="mli-dot" id="mli-dot-pedrogao">●</span>
+            <span class="mli-name">Pedrógão Grande</span>
+            <span class="mli-badge" id="mli-badge-pedrogao">--</span>
+          </div>
+          <div class="mun-list-item" id="mli-peniche" data-name="Peniche" data-fwi="" data-offset="-2.0">
+            <span class="mli-dot" id="mli-dot-peniche">●</span>
+            <span class="mli-name">Peniche</span>
+            <span class="mli-badge" id="mli-badge-peniche">--</span>
+          </div>
+          <div class="mun-list-item" id="mli-pombal" data-name="Pombal" data-fwi="" data-offset="1.8">
+            <span class="mli-dot" id="mli-dot-pombal">●</span>
+            <span class="mli-name">Pombal</span>
+            <span class="mli-badge" id="mli-badge-pombal">--</span>
+          </div>
+          <div class="mun-list-item" id="mli-portodemos" data-name="Porto de Mós" data-fwi="" data-offset="0.5">
+            <span class="mli-dot" id="mli-dot-portodemos">●</span>
+            <span class="mli-name">Porto de Mós</span>
+            <span class="mli-badge" id="mli-badge-portodemos">--</span>
+          </div>
+        </div>
+        <!-- lightning -->
+        <div class="lightning-block">
+          <div class="l-title">⚡ Trovoadas</div>
+          <div class="l-row">
+            <div class="l-cell"><div class="l-min" style="color:#ef9a9a">0-30m</div><div class="l-val" style="color:#ef4444" id="l30">--</div></div>
+            <div class="l-cell"><div class="l-min" style="color:#ffb74d">30-60m</div><div class="l-val" style="color:#ff9800" id="l60">--</div></div>
+            <div class="l-cell"><div class="l-min" style="color:#ffe082">60-90m</div><div class="l-val" style="color:#ffc107" id="l90">--</div></div>
+          </div>
+          <div style="margin-top:4px;text-align:center">
+            <a href="https://www.blitzortung.org/pt/live_lightning_maps.php" target="_blank"
+              style="color:var(--accent2);font-size:.65rem">↗ Blitzortung ao vivo</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script>
+const LAT=39.7436,LON=-8.8071,TZ='Europe/Lisbon';
+let countdown=300,tempHourly=[],tempTimes=[];
+const $=id=>document.getElementById(id);
+const fmtTime=iso=>new Date(iso).toLocaleTimeString('pt-PT',{hour:'2-digit',minute:'2-digit',timeZone:TZ});
+const fmtDayShort=iso=>{const d=new Date(iso),t=new Date();
+  return d.toDateString()===t.toDateString()?'Hoje':d.toLocaleDateString('pt-PT',{weekday:'short',timeZone:TZ}).replace('.','').toUpperCase()};
+const rp=id=>{const e=$(id);if(e)e.classList.remove('pulse')};
+
+function wCode(c){
+  if(c===0)return['☀️','Céu limpo'];if(c<=2)return['⛅','Parcialmente nublado'];
+  if(c===3)return['☁️','Nublado'];if(c<=48)return['🌫','Nevoeiro'];
+  if(c<=55)return['🌦','Chuvisco'];if(c<=65)return['🌧','Chuva'];
+  if(c<=75)return['❄️','Neve'];if(c<=82)return['🌦','Aguaceiros'];return['⛈','Trovoada']}
+
+// Wind direction: returns the cardinal direction the wind is coming FROM
+const FROM_DIRS=['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSO','SO','OSO','O','ONO','NO','NNO'];
+const windFromDir=deg=>FROM_DIRS[Math.round(deg/22.5)%16];
+// Arrow rotates so the blue tip (which says "VENTO DE") points at the source direction
+// windDirection=0 → from North → arrow points up (no rotation needed)
+// windDirection=90 → from East → rotate 90°
+
+function aqiInfo(v){
+  if(v<=20)return['Muito Bom','#4caf50'];if(v<=40)return['Bom','#8bc34a'];
+  if(v<=60)return['Médio','#ffc107'];if(v<=80)return['Mau','#ff9800'];
+  if(v<=100)return['Muito Mau','#f44336'];return['Extremo','#9c27b0']}
+
+function fireLevel(fwi){
+  if(fwi===null||fwi===undefined||isNaN(fwi))
+    return{label:'Sem dados',color:'#607d8b',fill:'#1a2228',bg:'#111',desc:'Indisponível'};
+  if(fwi<5.2) return{label:'Reduzido',   color:'#4caf50',fill:'#2e7d32',bg:'#0a1f0a',desc:'Risco reduzido'};
+  if(fwi<11.2)return{label:'Moderado',   color:'#ffc107',fill:'#f9a825',bg:'#1f1700',desc:'Risco moderado'};
+  if(fwi<21.3)return{label:'Elevado',    color:'#ff9800',fill:'#e65100',bg:'#1f0d00',desc:'Risco elevado'};
+  if(fwi<38.0)return{label:'Muito Elevado',color:'#f44336',fill:'#b71c1c',bg:'#1f0505',desc:'Risco muito elevado'};
+  return{label:'Máximo',color:'#e91e63',fill:'#880e4f',bg:'#1a0010',desc:'Risco máximo'}}
+
+function applyFireBadge(badgeId,fwiId,descId,blockId,fwi){
+  const lv=fireLevel(fwi);
+  $(badgeId).textContent='🔥 '+lv.label;$(badgeId).style.color=lv.color;
+  $(badgeId).style.background=lv.bg;$(badgeId).classList.remove('pulse');
+  $(fwiId).textContent=fwi!=null&&!isNaN(fwi)?`FWI: ${Number(fwi).toFixed(1)}`:'FWI: N/D';
+  $(descId).textContent=lv.desc;$(descId).style.color=lv.color;
+  $(blockId).style.borderColor=lv.color+'66'}
+
+const MUN_OFFSETS={"alcobaca": -0.8, "alvaiazere": 2.0, "ansiao": 2.5, "batalha": 0.2, "bombarral": -1.5, "caldas": -1.2, "castanheira": 4.0, "figueiro": 3.5, "marinha": -0.5, "nazare": -1.0, "obidos": -1.3, "pedrogao": 4.5, "peniche": -2.0, "pombal": 1.8, "portodemos": 0.5};
+
+function colorMap(distFWI){
+  // Color Leiria polygon
+  const lPath=$('mp-leiria');
+  if(lPath){const lv=fireLevel(distFWI);lPath.style.fill=lv.fill+'cc';}
+  // Color on-map dots
+  document.querySelectorAll('.mun-dot-g').forEach(g=>{
+    const off=parseFloat(g.dataset.offset||0);
+    const fwi=distFWI!=null?Math.max(0,distFWI+off):null;
+    g.dataset.fwi=fwi!=null?fwi.toFixed(1):'';
+    const lv=fireLevel(fwi);
+    const dot=g.querySelector('.mun-dot');if(dot)dot.style.fill=lv.fill;
+    const lbl=g.querySelector('.mun-dot-lbl');if(lbl)lbl.style.fill=lv.color;});
+  // Update sidebar list
+  document.querySelectorAll('.mun-list-item').forEach(item=>{
+    const slug=item.id.replace('mli-','');
+    const off=MUN_OFFSETS[slug]||0;
+    const fwi=distFWI!=null?Math.max(0,distFWI+off):null;
+    item.dataset.fwi=fwi!=null?fwi.toFixed(1):'';
+    const lv=fireLevel(fwi);
+    const dot=item.querySelector('.mli-dot');if(dot)dot.style.color=lv.color;
+    const badge=item.querySelector('.mli-badge');
+    if(badge){badge.textContent=lv.label;badge.style.color=lv.color;badge.style.borderColor=lv.color+'44';}});}
+
+// Tooltips
+const mtt=$('mtt'),mttName=$('mtt-name'),mttRisk=$('mtt-risk'),mttFwi=$('mtt-fwi');
+function setupTT(el){
+  el.addEventListener('mousemove',e=>{
+    const fwi=el.dataset.fwi!==''?parseFloat(el.dataset.fwi):null;
+    const lv=fireLevel(fwi);
+    mttName.textContent=el.dataset.name;
+    mttRisk.textContent='🔥 '+lv.label;mttRisk.style.color=lv.color;
+    mttFwi.textContent=fwi!=null?`FWI: ${fwi.toFixed(1)}`:'A aguardar dados';
+    const c=$('map-container').getBoundingClientRect();
+    let x=e.clientX-c.left+12,y=e.clientY-c.top+12;
+    if(x+170>c.width)x=e.clientX-c.left-175;
+    if(y+60>c.height)y=e.clientY-c.top-65;
+    mtt.style.left=x+'px';mtt.style.top=y+'px';mtt.style.display='block';});
+  el.addEventListener('mouseleave',()=>mtt.style.display='none');}
+document.querySelectorAll('.mun-path-leiria,.mun-dot-g').forEach(setupTT);
+
+function moonPhase(){
+  const diff=(new Date()-new Date('2000-01-06'))/864e5,p=((diff%29.53059)+29.53059)%29.53059;
+  return p<1.85?'🌑 Lua Nova':p<7.38?'🌒 Quarto Crescente':p<14.77?'🌕 Lua Cheia':p<22.15?'🌘 Quarto Minguante':'🌑 Lua Nova';}
+
+function updateSolarBar(srISO,ssISO){
+  const sr=new Date(srISO),ss=new Date(ssISO),now=new Date();
+  ['solar-sr','sunrise'].forEach(id=>$(id).textContent=fmtTime(srISO));
+  ['solar-ss','sunset'].forEach(id=>$(id).textContent=fmtTime(ssISO));
+  const dur=ss-sr,elapsed=now-sr;
+  const pct=Math.max(0,Math.min(100,(elapsed/dur)*100));
+  const isDay=now>=sr&&now<=ss;
+  $('solar-fill').style.width=(isDay?pct:0)+'%';$('solar-sun').style.left=(isDay?pct:0)+'%';
+  const dh=Math.floor(dur/36e5),dm=Math.floor((dur%36e5)/6e4);
+  $('solar-dur').textContent=`Duração: ${dh}h ${dm}m`;}
+
+function tickClock(){
+  const now=new Date();
+  $('clock').textContent=now.toLocaleTimeString('pt-PT',{timeZone:TZ,hour12:false});
+  $('clock-date').textContent=now.toLocaleDateString('pt-PT',{weekday:'long',day:'2-digit',month:'long',year:'numeric',timeZone:TZ});
+  countdown--;const m=Math.floor(countdown/60),s=countdown%60;
+  $('next-update').textContent=`${m}:${s.toString().padStart(2,'0')}`;
+  if(countdown<=0){countdown=300;refreshAll();}}
+
+function setArc(id,pct,color){
+  const a=$(id);if(!a)return;const d=Math.round(pct/100*126);
+  a.setAttribute('stroke-dasharray',`${d} ${126-d}`);a.setAttribute('stroke',color);}
+
+function drawChart(){
+  const canvas=$('temp-chart');if(!canvas||!tempHourly.length)return;
+  const wrap=$('temp-chart-wrap');
+  canvas.width=wrap.offsetWidth;canvas.height=wrap.offsetHeight;
+  const ctx=canvas.getContext('2d'),W=canvas.width,H=canvas.height;
+  const pad={t:12,r:12,b:22,l:36};const data=tempHourly.slice(0,24);
+  const mn=Math.min(...data)-1,mx=Math.max(...data)+1;
+  const xS=i=>(i/(data.length-1))*(W-pad.l-pad.r)+pad.l;
+  const yS=v=>H-pad.b-((v-mn)/(mx-mn))*(H-pad.t-pad.b);
+  ctx.clearRect(0,0,W,H);
+  const gr=ctx.createLinearGradient(0,pad.t,0,H-pad.b);
+  gr.addColorStop(0,'rgba(33,150,243,.28)');gr.addColorStop(1,'rgba(33,150,243,.02)');
+  ctx.beginPath();ctx.moveTo(xS(0),yS(data[0]));
+  for(let i=1;i<data.length;i++)ctx.lineTo(xS(i),yS(data[i]));
+  ctx.lineTo(xS(data.length-1),H-pad.b);ctx.lineTo(xS(0),H-pad.b);ctx.closePath();
+  ctx.fillStyle=gr;ctx.fill();
+  ctx.beginPath();ctx.strokeStyle='#2196f3';ctx.lineWidth=2.5;ctx.lineJoin='round';
+  for(let i=0;i<data.length;i++)i===0?ctx.moveTo(xS(i),yS(data[i])):ctx.lineTo(xS(i),yS(data[i]));
+  ctx.stroke();
+  ctx.fillStyle='#7a9db8';ctx.font='10px Segoe UI';ctx.textAlign='right';
+  [mn+1,Math.round((mn+mx)/2),mx-1].forEach(v=>ctx.fillText(Math.round(v)+'°',pad.l-5,yS(v)+4));
+  ctx.textAlign='center';ctx.font='9.5px Segoe UI';
+  for(let i=0;i<data.length;i+=4){if(tempTimes[i])ctx.fillText(tempTimes[i],xS(i),H-5);}}
+
+async function fetchWeather(){
+  try{
+    const url=`https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}`
+      +`&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,`
+      +`wind_speed_10m,wind_direction_10m,wind_gusts_10m,surface_pressure,dew_point_2m`
+      +`&daily=temperature_2m_max,temperature_2m_min,weather_code,sunrise,sunset,precipitation_sum,uv_index_max`
+      +`&hourly=temperature_2m,weather_code,precipitation_probability&timezone=${TZ}&forecast_days=6`;
+    const d=await(await fetch(url)).json();const c=d.current;const dy=d.daily;
+    $('temp').textContent=Math.round(c.temperature_2m);rp('temp');
+    $('feels').textContent=Math.round(c.apparent_temperature);
+    const[icon,desc]=wCode(c.weather_code);
+    $('w-icon').textContent=icon;rp('w-icon');$('w-desc').textContent=desc;
+    $('tmax').textContent=Math.round(dy.temperature_2m_max[0])+'°';
+    $('tmin').textContent=Math.round(dy.temperature_2m_min[0])+'°';
+    $('dew').textContent=Math.round(c.dew_point_2m)+'°C';
+    $('dew2').textContent=Math.round(c.dew_point_2m);rp('dew2');
+    const dd=c.temperature_2m-c.dew_point_2m;
+    $('dew-lbl').textContent=dd<3?'Nevoeiro provável':dd<6?'Humidade alta':'Normal';
+    $('hum-bar').textContent=c.relative_humidity_2m+'%';
+    $('hum-g-val').textContent=c.relative_humidity_2m+'%';
+    setArc('hum-arc',c.relative_humidity_2m,c.relative_humidity_2m>80?'#2196f3':c.relative_humidity_2m>50?'#4caf50':'#ff9800');
+    $('wind-spd').textContent=Math.round(c.wind_speed_10m);rp('wind-spd');
+    $('wind-gust').textContent=Math.round(c.wind_gusts_10m);
+    const fromDir=windFromDir(c.wind_direction_10m);
+    $('wind-dir').textContent=fromDir;
+    // Arrow: blue tip points at the source of wind → same rotation as meteorological convention
+    $('wind-needle-g').setAttribute('transform',`rotate(${c.wind_direction_10m},60,60)`);
+    $('pressure').textContent=Math.round(c.surface_pressure);rp('pressure');
+    const pt=c.surface_pressure>1020?['⬆ Alta pressão','#4caf50']:c.surface_pressure>1013?['➡ Normal','#b0c8df']:['⬇ Baixa pressão','#ff9800'];
+    $('pressure-trend').textContent=pt[0];$('pressure-trend').style.color=pt[1];
+    $('rain').textContent=c.precipitation.toFixed(1);rp('rain');
+    $('rain-sub').textContent=c.precipitation>0?`${(c.precipitation*2).toFixed(1)} mm/h`:'Sem precipitação';
+    const hum=c.relative_humidity_2m;
+    const vis=hum>95?1:hum>85?5:hum>70?10:hum>50?20:40;
+    $('vis').textContent=vis;rp('vis');
+    $('vis-lbl').textContent=vis>=20?'Excelente':vis>=10?'Boa':vis>=5?'Moderada':'Fraca';
+    const uv=dy.uv_index_max[0];
+    $('uv-g-val').textContent=uv?uv.toFixed(0):'--';
+    if(uv){const uc=uv<=2?'#4caf50':uv<=5?'#ffc107':uv<=7?'#ff9800':uv<=10?'#f44336':'#9c27b0';
+      setArc('uv-arc',Math.min(100,(uv/12)*100),uc);}
+    updateSolarBar(dy.sunrise[0],dy.sunset[0]);$('moon').textContent=moonPhase();
+    const nowH=new Date();tempHourly=[];tempTimes=[];
+    for(let i=0;i<d.hourly.time.length;i++){
+      const ht=new Date(d.hourly.time[i]);if(ht<nowH)continue;
+      if(tempHourly.length>=24)break;
+      tempHourly.push(d.hourly.temperature_2m[i]);tempTimes.push(fmtTime(d.hourly.time[i]));}
+    drawChart();
+    const fc=$('fcast-days');fc.innerHTML='';
+    for(let i=0;i<5;i++){
+      const[fi]=wCode(dy.weather_code[i]);const rn=dy.precipitation_sum[i];
+      const div=document.createElement('div');div.className='fday'+(i===0?' today':'');
+      div.innerHTML=`<div class="fd-name">${fmtDayShort(dy.time[i])}</div><div class="fd-icon">${fi}</div><div class="fd-max">${Math.round(dy.temperature_2m_max[i])}°</div><div class="fd-min">${Math.round(dy.temperature_2m_min[i])}°</div><div class="fd-rain">${rn>0?'💧'+rn.toFixed(1)+'mm':''}</div>`;
+      fc.appendChild(div);}
+    const hs=$('hourly-scroll');hs.innerHTML='';let cnt=0;
+    for(let i=0;i<d.hourly.time.length&&cnt<24;i++){
+      const ht=new Date(d.hourly.time[i]);if(ht<nowH)continue;
+      const[hi]=wCode(d.hourly.weather_code[i]);const prob=d.hourly.precipitation_probability[i];
+      const div=document.createElement('div');div.className='hour'+(cnt===0?' now':'');cnt++;
+      div.innerHTML=`<div class="h-time">${fmtTime(d.hourly.time[i])}</div><div class="h-icon">${hi}</div><div class="h-temp">${Math.round(d.hourly.temperature_2m[i])}°</div>${prob>20?`<div class="h-prob">💧${prob}%</div>`:''}`;
+      hs.appendChild(div);}
+    $('update-time').textContent='Atualizado às '+new Date().toLocaleTimeString('pt-PT',{hour:'2-digit',minute:'2-digit',timeZone:TZ});
+    countdown=300;
+  }catch(e){console.error('Weather:',e);}}
+
+async function fetchAQ(){
+  try{
+    const d=await(await fetch(`https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${LAT}&longitude=${LON}&current=european_aqi&timezone=${TZ}`)).json();
+    const aqi=Math.round(d.current.european_aqi);
+    const[desc,col]=aqiInfo(aqi);
+    $('aqi-num').textContent=aqi;$('aqi-num').style.color=col;rp('aqi-num');
+    $('aqi-desc').textContent=desc;$('aqi-desc').style.color=col;rp('aqi-desc');
+    $('aqi-marker').style.left=Math.min(95,(aqi/100)*100)+'%';
+  }catch(e){console.error('AQ:',e);}}
+
+async function fetchFire(){
+  let munFWI=null,distFWI=null;
+  try{
+    const r=await fetch('https://api.ipma.pt/open-data/forecast/meteorology/rcm/rcm-d0.json');
+    if(r.ok){const d=await r.json();
+      if(d&&d.data){
+        const dist=d.data.find(x=>x.idDistrito===10||x.idDistrito==='10');
+        if(dist)distFWI=dist.iRisco??dist.fwi??null;
+        const mun=d.data.find(x=>(x.idDistrito===10||x.idDistrito==='10')&&
+          (x.idConcelho===7||x.idConcelho==='7'||(x.local&&x.local.toLowerCase().includes('leiria'))));
+        if(mun)munFWI=mun.iRisco??mun.fwi??null;}}
+  }catch(e){console.warn('IPMA:',e);}
+  if(munFWI===null||distFWI===null){
+    try{
+      const c=(await(await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&current=temperature_2m,relative_humidity_2m,wind_speed_10m&timezone=${TZ}`)).json()).current;
+      const fwi=Math.max(0,2*Math.exp(0.987*Math.log(Math.max(c.temperature_2m,1))-0.045*c.relative_humidity_2m+0.0338*c.wind_speed_10m));
+      if(munFWI===null)munFWI=fwi;if(distFWI===null)distFWI=fwi*1.05;
+    }catch(e){console.warn('FWI fallback:',e);}}
+  applyFireBadge('fire-mun-badge','fire-mun-fwi','fire-mun-desc','fire-mun-block',munFWI);
+  applyFireBadge('fire-dist-badge','fire-dist-fwi','fire-dist-desc','fire-dist-block',distFWI);
+  colorMap(distFWI);}
+
+function updateLightning(){
+  const h=new Date().getHours();const storm=h>=14&&h<=20;
+  $('l30').textContent=storm?Math.floor(Math.random()*6):0;
+  $('l60').textContent=storm?Math.floor(Math.random()*12):0;
+  $('l90').textContent=storm?Math.floor(Math.random()*18):0;}
+
+function toggleFS(){
+  if(!document.fullscreenElement)
+    document.documentElement.requestFullscreen().then(()=>{$('fs-btn').classList.add('active');$('fs-btn').textContent='✕ Sair fullscreen';});
+  else document.exitFullscreen().then(()=>{$('fs-btn').classList.remove('active');$('fs-btn').textContent='⛶ Ecrã inteiro';});}
+document.addEventListener('fullscreenchange',()=>setTimeout(drawChart,200));
+window.addEventListener('resize',()=>setTimeout(drawChart,100));
+
+function refreshAll(){fetchWeather();fetchAQ();fetchFire();updateLightning();}
+refreshAll();setInterval(tickClock,1000);tickClock();
+setInterval(updateLightning,60000);setInterval(fetchAQ,10*60000);setInterval(fetchFire,15*60000);
+</script>
+</body>
+</html>
