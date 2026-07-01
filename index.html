@@ -5,13 +5,10 @@
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>MeteoLeiria</title>
 <style>
-:root{
-  --bg:#080f1a;--bg2:#0c1624;--bg3:#111e30;--bg4:#16273d;
-  --card:#0e1c2e;--border:#1d3550;--border2:#254463;
-  --accent:#2196f3;--accent2:#64b5f6;
+:root{--bg:#080f1a;--bg2:#0c1624;--bg3:#111e30;--bg4:#16273d;--card:#0e1c2e;
+  --border:#1d3550;--border2:#254463;--accent:#2196f3;--accent2:#64b5f6;
   --green:#4caf50;--text:#e8f4fd;--text2:#b0c8df;--text3:#7a9db8;
-  --r:10px;--r2:14px;--font:'Segoe UI',system-ui,sans-serif;
-}
+  --r:10px;--r2:14px;--font:'Segoe UI',system-ui,sans-serif;}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font);overflow:hidden;font-size:15px}
 body{display:flex;flex-direction:column}
@@ -19,74 +16,92 @@ body{display:flex;flex-direction:column}
 
 /* HEADER */
 #hdr{background:var(--bg2);border-bottom:1px solid var(--border);height:54px;
-  padding:0 18px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
-.logo{width:36px;height:36px;background:linear-gradient(135deg,#1565c0,#42a5f5);
-  border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-right:10px}
-.site-title{font-size:1.15rem;font-weight:700;color:#fff}
-.site-sub{font-size:.75rem;color:var(--text3)}
-#clock{font-size:1.75rem;font-weight:300;color:#fff;letter-spacing:3px;font-variant-numeric:tabular-nums;text-align:center}
-#clock-date{font-size:.72rem;color:var(--text3);text-align:center}
+  padding:0 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;gap:10px}
+.logo{width:34px;height:34px;background:linear-gradient(135deg,#1565c0,#42a5f5);
+  border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;margin-right:8px}
+.st{font-size:1.1rem;font-weight:700;color:#fff}.ss{font-size:.74rem;color:var(--text3)}
+#clock{font-size:1.7rem;font-weight:300;color:#fff;letter-spacing:3px;font-variant-numeric:tabular-nums;text-align:center}
+#cdate{font-size:.72rem;color:var(--text3);text-align:center}
 .hbtn{background:var(--bg3);border:1px solid var(--border2);color:var(--text2);
-  padding:5px 12px;border-radius:7px;font-size:.78rem;cursor:pointer;transition:all .2s}
+  padding:5px 10px;border-radius:6px;font-size:.75rem;cursor:pointer;transition:all .2s;white-space:nowrap}
 .hbtn:hover,.hbtn.on{background:var(--accent);color:#fff;border-color:var(--accent)}
-#upd-dot{width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;margin-right:5px;animation:blink 3s infinite}
+#upd-dot{width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;margin-right:4px;animation:blink 3s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-#upd-time{font-size:.73rem;color:var(--text3)}
+#upd-t{font-size:.72rem;color:var(--text3)}
+#notif-badge{display:none;position:absolute;top:-3px;right:-3px;width:7px;height:7px;background:#ef4444;border-radius:50%}
+#notif-badge.on{display:block}
+#notif-btn{position:relative}
 
 /* ALERT */
-#alert-bar{display:none;padding:5px 18px;font-size:.8rem;font-weight:600;
-  align-items:center;gap:10px;border-bottom:1px solid transparent;flex-shrink:0}
+#alert-bar{display:none;padding:5px 16px;font-size:.8rem;font-weight:600;
+  align-items:center;gap:8px;border-bottom:1px solid transparent;flex-shrink:0;cursor:pointer}
 #alert-bar.on{display:flex}
+#alert-detail{display:none;padding:5px 16px 6px;font-size:.76rem;background:var(--bg2);
+  border-bottom:1px solid var(--border);color:var(--text2);flex-shrink:0}
+#alert-detail.on{display:block}
+
+/* STATIONS */
+#stn-bar{display:none;padding:4px 16px;background:var(--bg3);border-bottom:1px solid var(--border);
+  font-size:.72rem;color:var(--text2);overflow-x:auto;white-space:nowrap;flex-shrink:0}
+#stn-bar.on{display:block}
+.stn{display:inline-flex;align-items:center;gap:4px;margin-right:14px;padding:1px 0}
+.stn-n{color:var(--text3);font-size:.68rem}.stn-v{color:var(--text);font-weight:600}
 
 /* INFO BAR */
 #info-bar{background:var(--bg2);border-bottom:1px solid var(--border);
-  padding:5px 18px;display:flex;align-items:center;flex-shrink:0;gap:0}
-.ib{display:flex;align-items:center;gap:5px;padding:0 12px;
-  border-right:1px solid var(--border);font-size:.8rem;color:var(--text3);white-space:nowrap}
+  padding:5px 16px;display:flex;align-items:center;flex-shrink:0}
+.ib{display:flex;align-items:center;gap:5px;padding:0 10px;
+  border-right:1px solid var(--border);font-size:.78rem;color:var(--text3);white-space:nowrap}
 .ib:first-child{padding-left:0}.ib:last-child{border-right:none;margin-left:auto}
-.ibv{color:var(--text);font-weight:600;font-size:.86rem}
+.ibv{color:var(--text);font-weight:600;font-size:.84rem}
 
 /* SOLAR */
 #solar-bar{background:var(--bg3);border-bottom:1px solid var(--border);
-  padding:4px 18px;display:flex;align-items:center;gap:12px;flex-shrink:0}
-#sol-track{flex:1;height:6px;background:var(--bg4);border-radius:3px;position:relative}
+  padding:4px 16px;display:flex;align-items:center;gap:10px;flex-shrink:0}
+#sol-track{flex:1;height:6px;background:var(--bg4);border-radius:3px;position:relative;overflow:visible}
 #sol-fill{height:100%;background:linear-gradient(to right,#e65100,#ffc107,#fff176);border-radius:3px;width:0%}
-#sol-sun{position:absolute;top:50%;transform:translate(-50%,-50%);font-size:14px;left:0%}
-.sol-lbl{font-size:.76rem;color:var(--text3);white-space:nowrap;font-weight:500}
+#sol-sun{position:absolute;top:50%;transform:translate(-50%,-50%);font-size:13px;left:0%}
+.sol-l{font-size:.74rem;color:var(--text3);white-space:nowrap;font-weight:500}
 
 /* GRID */
-#grid{flex:1;display:grid;
-  grid-template-columns:1.9fr 0.95fr 1.6fr;
-  grid-template-rows:1.3fr 0.7fr;
-  gap:9px;padding:9px;min-height:0;overflow:hidden}
+#grid{flex:1;display:grid;grid-template-columns:1.9fr 0.95fr 1.6fr;
+  grid-template-rows:1.3fr 0.7fr;gap:8px;padding:8px;min-height:0;overflow:hidden}
+
+/* KIOSK */
+body.kiosk #grid{grid-template-columns:1fr;grid-template-rows:1fr}
+body.kiosk .card:not(.kiosk-on){display:none}
+body.kiosk .card.kiosk-on{grid-column:1;grid-row:1}
+#kiosk-bar{display:none;background:var(--bg2);border-top:1px solid var(--border);
+  padding:6px;justify-content:center;gap:8px;flex-shrink:0}
+body.kiosk #kiosk-bar{display:flex}
+.kdot{width:8px;height:8px;border-radius:50%;background:var(--border2)}
+.kdot.on{background:var(--accent)}
 
 .card{background:var(--card);border:1px solid var(--border);border-radius:var(--r2);
-  padding:12px;display:flex;flex-direction:column;overflow:hidden;min-height:0}
-.ctitle{font-size:.72rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;
-  margin-bottom:7px;display:flex;align-items:center;gap:5px;flex-shrink:0;font-weight:600}
+  padding:11px;display:flex;flex-direction:column;overflow:hidden;min-height:0}
+.ct{font-size:.71rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;
+  margin-bottom:6px;display:flex;align-items:center;gap:5px;flex-shrink:0;font-weight:600}
 
 /* TEMPERATURA */
-#c-temp{grid-column:1;grid-row:1;position:relative}
-#c-temp::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;
-  background:radial-gradient(circle,rgba(33,150,243,.07) 0%,transparent 70%);border-radius:50%;pointer-events:none}
-.th{display:flex;align-items:flex-start;gap:10px;margin-bottom:6px}
-#w-icon{font-size:3.6rem;line-height:1;flex-shrink:0}
-#temp{font-size:5rem;font-weight:200;line-height:1;color:#fff;letter-spacing:-3px}
-.tc{font-size:1.9rem;color:var(--accent2);margin-top:9px}
+#c-temp{grid-column:1;grid-row:1}
+.th{display:flex;align-items:flex-start;gap:10px;margin-bottom:6px;flex-shrink:0}
+#w-icon{font-size:3.4rem;line-height:1;flex-shrink:0}
+#temp{font-size:4.8rem;font-weight:200;line-height:1;color:#fff;letter-spacing:-3px}
+.tc{font-size:1.8rem;color:var(--accent2);margin-top:9px}
 .tr{flex:1;text-align:right}
-#w-desc{font-size:.92rem;color:var(--text2);margin-bottom:3px;font-weight:500}
-.tfeel{font-size:.8rem;color:var(--text3)}.tfeel b{color:var(--text2)}
-.comf{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;
-  border-radius:6px;font-size:.74rem;font-weight:600;margin-top:4px;border:1px solid transparent}
-.mmr{display:flex;gap:6px;margin-top:6px;justify-content:flex-end}
-.mm{background:var(--bg4);border-radius:7px;padding:4px 11px;text-align:center}
-.mml{font-size:.64rem;color:var(--text3);text-transform:uppercase;letter-spacing:.5px}
-.mmv{font-size:1rem;font-weight:600}
+#w-desc{font-size:.9rem;color:var(--text2);margin-bottom:2px;font-weight:500}
+.tfeel{font-size:.78rem;color:var(--text3)}.tfeel b{color:var(--text2)}
+#comf{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;
+  border-radius:6px;font-size:.72rem;font-weight:600;margin-top:4px;border:1px solid transparent}
+.mmr{display:flex;gap:6px;margin-top:5px;justify-content:flex-end}
+.mm{background:var(--bg4);border-radius:6px;padding:4px 10px;text-align:center}
+.mml{font-size:.62rem;color:var(--text3);text-transform:uppercase;letter-spacing:.5px}
+.mmv{font-size:.98rem;font-weight:600}
 .mmv.mx{color:#ff7043}.mmv.mn{color:var(--accent2)}
-#temp-wrap{flex:1;position:relative;min-height:0}
-#temp-chart{width:100%;height:100%}
-#rain-wrap{flex-shrink:0;margin-top:5px}
-#rain-chart{width:100%}
+#tw{flex:1;position:relative;min-height:0}
+#tc{width:100%;height:100%}
+#rw{flex-shrink:0;margin-top:4px}
+#rc{width:100%}
 
 /* PREVISÃO */
 #c-fore{grid-column:1;grid-row:2;gap:7px}
@@ -94,113 +109,132 @@ body{display:flex;flex-direction:column}
 .fd{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);
   display:flex;flex-direction:column;align-items:center;padding:6px 3px;gap:2px}
 .fd.tod{border-color:var(--accent);background:var(--bg4)}
-.fdn{font-size:.66rem;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;font-weight:600}
-.fdi{font-size:1.35rem}.fdx{font-size:.92rem;font-weight:700;color:#ff7043}
-.fdm{font-size:.8rem;color:var(--accent2);font-weight:600}.fdr{font-size:.62rem;color:var(--text3)}
-#hscroll{display:flex;gap:5px;overflow-x:auto;flex:1;align-items:center;padding-bottom:2px}
-#hscroll::-webkit-scrollbar{height:3px}
-#hscroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.fdn{font-size:.65rem;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;font-weight:600}
+.fdi{font-size:1.3rem}.fdx{font-size:.9rem;font-weight:700;color:#ff7043}
+.fdm{font-size:.78rem;color:var(--accent2);font-weight:600}.fdr{font-size:.6rem;color:var(--text3)}
+#hs{display:flex;gap:5px;overflow-x:auto;flex:1;align-items:center;padding-bottom:2px}
+#hs::-webkit-scrollbar{height:3px}
+#hs::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
 .hr{flex:0 0 auto;background:var(--bg3);border:1px solid var(--border);border-radius:7px;
   padding:5px 7px;text-align:center;min-width:50px}
 .hr.now{border-color:var(--accent);background:var(--bg4)}
-.ht{font-size:.66rem;color:var(--text3);font-weight:600}
-.hi{font-size:1.05rem}.hv{font-size:.82rem;font-weight:700}
+.ht{font-size:.65rem;color:var(--text3);font-weight:600}
+.hi{font-size:1rem}.hv{font-size:.8rem;font-weight:700}
 .hp{font-size:.6rem;color:var(--accent2)}
 
 /* VENTO */
 #c-wind{grid-column:2;grid-row:1}
-.compass{width:118px;height:118px;margin:2px auto 4px;flex-shrink:0}
-.compass svg{width:100%;height:100%}
-.wsp{font-size:1.95rem;font-weight:300;color:#fff;text-align:center;line-height:1}
-.wun{font-size:.76rem;color:var(--text3);text-align:center;font-weight:600}
-.wfrom{font-size:.82rem;color:var(--text2);text-align:center;margin-top:3px;font-weight:500}
-.wgust{font-size:.76rem;color:var(--text3);text-align:center;margin-top:2px}
-.wgust b{color:var(--text2)}
-.gauges{display:flex;gap:5px;margin-top:6px}
-.gw{display:flex;flex-direction:column;align-items:center;flex:1}
-.gw svg{width:100%;max-width:110px;height:auto}
-.gl{font-size:.68rem;color:var(--text3);margin-top:1px;text-align:center;font-weight:600}
+.cmp{width:114px;height:114px;margin:2px auto 4px;flex-shrink:0}
+.cmp svg{width:100%;height:100%}
+.wsp{font-size:1.9rem;font-weight:300;color:#fff;text-align:center;line-height:1}
+.wun{font-size:.74rem;color:var(--text3);text-align:center;font-weight:600}
+.wfr{font-size:.8rem;color:var(--text2);text-align:center;margin-top:3px;font-weight:500}
+.wgu{font-size:.74rem;color:var(--text3);text-align:center;margin-top:2px}
+.wgu b{color:var(--text2)}
+#wr-wrap{flex:1;display:flex;align-items:center;justify-content:center;min-height:0;margin-top:4px}
+#wr{width:100%;height:100%;max-height:100px}
 
-/* PRESSÃO */
+/* MÉTRICAS */
 #c-pres{grid-column:2;grid-row:2;display:grid;grid-template-columns:1fr 1fr;gap:6px}
 .pb{display:flex;flex-direction:column;align-items:center;justify-content:center;
   background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:7px 5px}
 .pbi{font-size:1.3rem;margin-bottom:3px}
-.pbl{font-size:.65rem;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;font-weight:600}
-.pbv{font-size:1.28rem;font-weight:600;color:#fff}.pbu{font-size:.65rem;color:var(--text3)}
-.pbt{font-size:.67rem;margin-top:2px;font-weight:600}
+.pbl{font-size:.64rem;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;font-weight:600}
+.pbv{font-size:1.25rem;font-weight:600;color:#fff}.pbu{font-size:.64rem;color:var(--text3)}
+.pbt{font-size:.66rem;margin-top:2px;font-weight:600}
+.sbar{height:4px;background:var(--border);border-radius:2px;margin-top:3px;overflow:hidden;width:100%}
+.sfil{height:100%;border-radius:2px;transition:width 1s}
 
 /* FOGO */
-#c-fire{grid-column:3;grid-row:1;padding:10px 12px}
-.fbody{display:flex;gap:9px;height:100%}
-#map-side{flex:1;min-width:0;display:flex;flex-direction:column}
-.maptitle{font-size:.66rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;
+#c-fire{grid-column:3;grid-row:1;padding:10px}
+.fbody{display:flex;gap:8px;height:100%}
+#map-s{flex:1;min-width:0;display:flex;flex-direction:column}
+.mpt{font-size:.65rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;
   font-weight:600;margin-bottom:3px;flex-shrink:0}
 #map-cnt{flex:1;min-height:0;position:relative;overflow:hidden;border-radius:6px}
 #dmap{width:100%;height:100%}
-.mlegend{display:flex;gap:4px;flex-wrap:wrap;margin-top:3px;flex-shrink:0}
-.mleg{display:flex;align-items:center;gap:3px;font-size:.58rem;color:var(--text3)}
-.mleg-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
-#fire-sb{width:126px;flex-shrink:0;display:flex;flex-direction:column;gap:5px}
+.mleg-row{display:flex;gap:4px;flex-wrap:wrap;margin-top:3px;flex-shrink:0}
+.mleg{display:flex;align-items:center;gap:3px;font-size:.57rem;color:var(--text3)}
+.mleg-d{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+#fire-sb{width:124px;flex-shrink:0;display:flex;flex-direction:column;gap:5px}
 .fb{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:6px 5px;text-align:center}
-.fscope{font-size:.6rem;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;font-weight:600;margin-bottom:2px}
-.fbadge{font-size:.74rem;font-weight:700;padding:3px 6px;border-radius:5px;margin-bottom:2px;width:100%;text-align:center}
-.ffwi{font-size:.64rem;color:var(--text3)}.fdesc{font-size:.64rem;font-weight:600}
+  display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px 5px;text-align:center}
+.fsc{font-size:.59rem;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;font-weight:600;margin-bottom:2px}
+.fbdg{font-size:.72rem;font-weight:700;padding:3px 6px;border-radius:5px;margin-bottom:2px;width:100%;text-align:center}
+.fd1{font-size:.64rem;margin-bottom:2px}.fd1 span:first-child{color:var(--text3)}
+.fd1b{font-weight:700}
+.fdsc{font-size:.62rem;font-weight:600}
+.fsrc{display:flex;align-items:center;gap:3px;margin-top:2px}
+.fsrc-d{width:6px;height:6px;border-radius:50%;background:#607d8b;flex-shrink:0}
+.fsrc span{font-size:.56rem;color:var(--text3)}
 #mun-list{flex:1;overflow-y:auto;background:var(--bg3);border:1px solid var(--border);
-  border-radius:var(--r);padding:4px 6px;min-height:0}
-#mun-list::-webkit-scrollbar{width:3px}
+  border-radius:var(--r);padding:3px 5px;min-height:0}
+#mun-list::-webkit-scrollbar{width:2px}
 #mun-list::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
-.mli{display:flex;align-items:center;gap:4px;padding:2px 0;
-  border-bottom:1px solid var(--border);font-size:.66rem}
+.mli{display:flex;align-items:center;gap:3px;padding:2px 0;border-bottom:1px solid var(--border);font-size:.64rem}
 .mli:last-child{border-bottom:none}
-.mli-dot{font-size:.58rem;flex-shrink:0;transition:color .4s}
+.mli-dot{font-size:.56rem;flex-shrink:0;transition:color .4s}
 .mli-name{flex:1;color:var(--text2);overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
-.mli-badge{font-size:.58rem;font-weight:700;padding:1px 4px;border-radius:3px;
-  flex-shrink:0;background:var(--bg4);border:1px solid transparent;min-width:36px;text-align:center}
-.lblock{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);
-  padding:5px;flex-shrink:0}
-.ltitle{font-size:.58rem;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;
-  font-weight:600;margin-bottom:3px;text-align:center}
-.lrow{display:flex;gap:3px}
-.lcell{flex:1;text-align:center;background:var(--bg4);border-radius:4px;padding:3px 2px}
-.lmin{font-size:.54rem;color:var(--text3)}.lval{font-size:.82rem;font-weight:700}
+.mli-badge{font-size:.56rem;font-weight:700;padding:1px 3px;border-radius:3px;
+  flex-shrink:0;background:var(--bg4);border:1px solid transparent;min-width:32px;text-align:center}
+.lb{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:5px;flex-shrink:0}
+.lt{font-size:.57rem;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;font-weight:600;margin-bottom:3px;text-align:center}
+.lr{display:flex;gap:3px}
+.lc{flex:1;text-align:center;background:var(--bg4);border-radius:4px;padding:3px 2px}
+.lm{font-size:.53rem;color:var(--text3)}.lv{font-size:.8rem;font-weight:700}
 
 /* AQI */
-#c-aqi{grid-column:3;grid-row:2;flex-direction:column;gap:6px;padding:10px 16px}
-#aqi-num{font-size:3.2rem;font-weight:200;line-height:1;min-width:70px;transition:color .5s}
-.aqi-row{display:flex;align-items:center;gap:14px;flex:1}
-.aqi-right{flex:1}
-#aqi-desc{font-size:1rem;font-weight:700;margin-bottom:2px;transition:color .5s}
-.aqi-sub{font-size:.7rem;color:var(--text3)}
-#aqi-advice{font-size:.72rem;margin-top:2px}
-.aqi-track{height:6px;background:linear-gradient(to right,#4caf50,#8bc34a,#ffc107,#ff9800,#f44336,#9c27b0);
-  border-radius:3px;position:relative;margin-top:7px}
-#aqi-mk{position:absolute;top:50%;width:10px;height:10px;background:#fff;
-  border-radius:50%;transform:translate(-50%,-50%);transition:left .8s;box-shadow:0 0 4px rgba(0,0,0,.5);left:0%}
-.aqi-scale{display:flex;justify-content:space-between;margin-top:3px;font-size:.58rem;color:var(--text3)}
+#c-aqi{grid-column:3;grid-row:2;flex-direction:column;gap:5px}
+.aqi-r{display:flex;align-items:center;gap:12px;flex:1}
+#aqi-n{font-size:3rem;font-weight:200;line-height:1;min-width:65px;transition:color .5s}
+.aqi-ri{flex:1}
+#aqi-d{font-size:.96rem;font-weight:700;margin-bottom:2px;transition:color .5s}
+.aqi-s{font-size:.68rem;color:var(--text3)}
+#aqi-a{font-size:.7rem;margin-top:2px}
+.aqi-t{height:5px;background:linear-gradient(to right,#4caf50,#8bc34a,#ffc107,#ff9800,#f44336,#9c27b0);
+  border-radius:3px;position:relative;margin-top:6px}
+#aqi-m{position:absolute;top:50%;width:9px;height:9px;background:#fff;border-radius:50%;
+  transform:translate(-50%,-50%);transition:left .8s;box-shadow:0 0 3px rgba(0,0,0,.5);left:0%}
+.aqi-sc{display:flex;justify-content:space-between;margin-top:3px;font-size:.57rem;color:var(--text3)}
 
 /* SVG MAP */
-.mun-leiria{fill:#1e4a7a;stroke:#2196f3;stroke-width:1.5;cursor:pointer;transition:fill .4s;
-  filter:drop-shadow(0 0 5px rgba(33,150,243,.4))}
-.mun-leiria:hover{fill:#2660a0}
+.mun-l{fill:#1e4a7a;stroke:#2196f3;stroke-width:1.5;cursor:pointer;transition:fill .4s;
+  filter:drop-shadow(0 0 4px rgba(33,150,243,.4))}
+.mun-l:hover{fill:#2660a0}
 .mun-lbl{fill:#90caf9;font-size:11px;font-weight:700;font-family:'Segoe UI',sans-serif;pointer-events:none}
 .mdot-g{cursor:pointer}
 .mdot{stroke:#0a1520;stroke-width:.8;transition:fill .4s}
 .mdot-g:hover .mdot{stroke:#fff;stroke-width:1.5}
 .mdot-lbl{fill:#e0f0ff;font-size:5.5px;font-family:'Segoe UI',sans-serif;pointer-events:none;font-weight:700}
-
-/* TOOLTIP */
+.fdot{fill:#ef4444;stroke:#fff;stroke-width:.5;cursor:pointer;animation:fpulse 1.2s infinite}
+@keyframes fpulse{0%,100%{opacity:1}50%{opacity:.5}}
 #mtt{display:none;position:absolute;background:#0a1828;border:1px solid var(--accent);
-  border-radius:8px;padding:7px 11px;font-size:.75rem;pointer-events:none;z-index:10;
-  white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.5)}
-#mtt-name{font-weight:700;color:#fff;font-size:.82rem;margin-bottom:2px}
-#mtt-risk{font-weight:600}#mtt-fwi{font-size:.67rem;color:var(--text3);margin-top:1px}
+  border-radius:7px;padding:6px 10px;font-size:.73rem;pointer-events:none;z-index:10;
+  white-space:nowrap;box-shadow:0 4px 14px rgba(0,0,0,.5)}
+#mtt-n{font-weight:700;color:#fff;font-size:.8rem;margin-bottom:2px}
+#mtt-r{font-weight:600}#mtt-f{font-size:.65rem;color:var(--text3);margin-top:1px}
+
+/* GAUGES */
+.gauges{display:flex;gap:5px;margin-top:5px;flex-shrink:0}
+.gw{display:flex;flex-direction:column;align-items:center;flex:1}
+.gw svg{width:100%;max-width:106px;height:auto}
+.gl{font-size:.66rem;color:var(--text3);margin-top:1px;text-align:center;font-weight:600}
+
+/* QR MODAL */
+#qr-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;
+  align-items:center;justify-content:center}
+#qr-modal.on{display:flex}
+#qr-box{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:18px;
+  text-align:center;min-width:220px}
+#qr-box h3{font-size:.88rem;color:var(--text2);margin-bottom:8px}
+#qr-canvas{display:block;margin:0 auto 8px;border-radius:6px;background:#fff}
+#qr-url{font-size:.65rem;color:var(--text3);word-break:break-all;display:block;margin-bottom:8px}
+#qr-close{background:var(--bg3);border:1px solid var(--border2);color:var(--text2);
+  padding:5px 16px;border-radius:6px;cursor:pointer;font-size:.78rem}
 
 .pulse{animation:pulse 1.5s infinite}
 @keyframes pulse{0%,100%{opacity:.3}50%{opacity:.65}}
-::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar{width:3px;height:3px}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
 </style>
 </head>
@@ -210,20 +244,31 @@ body{display:flex;flex-direction:column}
 <div id="hdr">
   <div style="display:flex;align-items:center">
     <div class="logo">🌤</div>
-    <div><div class="site-title">MeteoLeiria</div><div class="site-sub">Dashboard · Leiria, Portugal · 39.74°N 8.81°W</div></div>
+    <div><div class="st">MeteoLeiria</div><div class="ss">Dashboard · Leiria · 39.74°N 8.81°W</div></div>
   </div>
-  <div><div id="clock">--:--:--</div><div id="clock-date">--</div></div>
-  <div style="display:flex;align-items:center;gap:9px">
-    <span><span id="upd-dot"></span><span id="upd-time">A carregar...</span></span>
-    <button class="hbtn" onclick="refreshAll()">↺ Atualizar</button>
+  <div><div id="clock">--:--:--</div><div id="cdate">--</div></div>
+  <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap">
+    <span><span id="upd-dot"></span><span id="upd-t">A carregar...</span></span>
+    <button class="hbtn" onclick="refreshAll()">↺</button>
     <button class="hbtn" id="fs-btn" onclick="toggleFS()">⛶ Ecrã inteiro</button>
+    <button class="hbtn" id="kiosk-btn" onclick="toggleKiosk()">📺 Quiosque</button>
+    <button class="hbtn" id="notif-btn" onclick="reqNotif()" title="Alertas">🔔<span id="notif-badge"></span></button>
+    <button class="hbtn" onclick="showQR()">QR</button>
   </div>
 </div>
 
-<div id="alert-bar">
-  <span id="al-icon">⚠️</span><span id="al-text">--</span>
-  <span id="al-time" style="margin-left:auto;font-size:.72rem;opacity:.8"></span>
+<div id="alert-bar" onclick="toggleDetail()">
+  <span id="al-i">⚠️</span><span id="al-t">--</span>
+  <span style="margin-left:auto;display:flex;gap:8px;align-items:center">
+    <span id="al-time" style="font-size:.68rem;opacity:.8"></span>
+    <span id="al-arr" style="font-size:.8rem">▼</span>
+  </span>
 </div>
+<div id="alert-detail">
+  <strong id="al-title">--</strong><br><span id="al-desc">--</span>
+</div>
+
+<div id="stn-bar"></div>
 
 <div id="info-bar">
   <div class="ib">🌅 Nascer&nbsp;<span class="ibv" id="sunrise">--:--</span></div>
@@ -231,60 +276,58 @@ body{display:flex;flex-direction:column}
   <div class="ib">💧&nbsp;<span class="ibv" id="hum-bar">--%</span></div>
   <div class="ib">🌡 Orvalho&nbsp;<span class="ibv" id="dew">--°C</span></div>
   <div class="ib">🌕&nbsp;<span class="ibv" id="moon">--</span></div>
-  <div class="ib">☀️ Sem chuva:&nbsp;<span class="ibv" id="dry-days">--</span></div>
-  <div class="ib">⏱&nbsp;<span class="ibv" id="nxt-upd">5:00</span></div>
+  <div class="ib">☀️ Sem chuva:&nbsp;<span class="ibv" id="dry-d">--</span></div>
+  <div class="ib">⏱&nbsp;<span class="ibv" id="nxt">5:00</span></div>
 </div>
 
 <div id="solar-bar">
-  <span class="sol-lbl" id="sol-sr">--:--</span>
+  <span class="sol-l" id="sol-sr">--:--</span>
   <div id="sol-track"><div id="sol-fill"></div><div id="sol-sun">☀️</div></div>
-  <span class="sol-lbl" id="sol-ss">--:--</span>
-  <span class="sol-lbl" style="margin-left:10px;color:var(--text2)" id="sol-dur">--h --m</span>
+  <span class="sol-l" id="sol-ss">--:--</span>
+  <span class="sol-l" style="margin-left:8px;color:var(--text2)" id="sol-dur">--h --m</span>
 </div>
 
 <div id="grid">
 
-<!-- C1R1: TEMPERATURA -->
-<div class="card" id="c-temp">
-  <div class="ctitle">🌡 Temperatura · Leiria</div>
+<!-- TEMPERATURA -->
+<div class="card" id="c-temp" data-ki="0">
+  <div class="ct">🌡 Temperatura atual · Leiria</div>
   <div class="th">
     <div id="w-icon" class="pulse">⏳</div>
     <div style="display:flex;align-items:flex-start"><div id="temp" class="pulse">--</div><div class="tc">°C</div></div>
     <div class="tr">
       <div id="w-desc">A carregar...</div>
       <div class="tfeel">Sensação: <b id="feels">--</b>°C</div>
-      <div id="comf-badge" class="comf pulse">-- conforto</div>
+      <div id="comf" class="pulse">-- conforto</div>
       <div class="mmr">
         <div class="mm"><div class="mml">Máx</div><div class="mmv mx" id="tmax">--°</div></div>
         <div class="mm"><div class="mml">Mín</div><div class="mmv mn" id="tmin">--°</div></div>
       </div>
     </div>
   </div>
-  <div id="temp-wrap"><canvas id="temp-chart"></canvas></div>
-  <div id="rain-wrap">
-    <div class="ctitle" style="margin-top:5px;margin-bottom:3px">🌧 Precipitação — últimos 7 dias</div>
-    <canvas id="rain-chart" height="44"></canvas>
+  <div id="tw"><canvas id="tc"></canvas></div>
+  <div id="rw">
+    <div class="ct" style="margin-top:4px;margin-bottom:2px">🌧 Precipitação — últimos 7 dias</div>
+    <canvas id="rc" height="42"></canvas>
   </div>
 </div>
 
-<!-- C1R2: PREVISÃO -->
-<div class="card" id="c-fore" style="gap:7px">
+<!-- PREVISÃO -->
+<div class="card" id="c-fore" data-ki="1" style="gap:7px">
   <div>
-    <div class="ctitle">📅 Previsão 5 dias</div>
-    <div class="fdays" id="fdays">
-      <div class="fd pulse"><div class="fdn">--</div><div class="fdi">⏳</div><div class="fdx">--°</div><div class="fdm">--°</div></div>
-    </div>
+    <div class="ct">📅 Previsão 5 dias</div>
+    <div class="fdays" id="fdays"></div>
   </div>
   <div style="flex:1;display:flex;flex-direction:column;min-height:0">
-    <div class="ctitle" style="margin-bottom:4px">🕐 Próximas 24h</div>
-    <div id="hscroll"></div>
+    <div class="ct" style="margin-bottom:4px">🕐 Próximas 24h</div>
+    <div id="hs"></div>
   </div>
 </div>
 
-<!-- C2R1: VENTO -->
-<div class="card" id="c-wind">
-  <div class="ctitle">💨 Vento</div>
-  <div class="compass">
+<!-- VENTO -->
+<div class="card" id="c-wind" data-ki="2">
+  <div class="ct">💨 Vento</div>
+  <div class="cmp">
     <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
       <circle cx="60" cy="60" r="57" fill="none" stroke="#1d3550" stroke-width="1.5"/>
       <circle cx="60" cy="60" r="48" fill="#0a1520" stroke="#1d3550" stroke-width="1"/>
@@ -302,15 +345,15 @@ body{display:flex;flex-direction:column}
   </div>
   <div class="wsp pulse" id="wsp">--</div>
   <div class="wun">km/h</div>
-  <div class="wfrom">Vento de <b id="wdir" style="color:var(--accent2)">--</b></div>
-  <div class="wgust">Rajada: <b id="wgust">--</b> km/h</div>
+  <div class="wfr">Vento de <b id="wdir" style="color:var(--accent2)">--</b></div>
+  <div class="wgu">Rajada: <b id="wgust">--</b> km/h</div>
   <div class="gauges">
     <div class="gw">
       <svg viewBox="0 0 100 60" xmlns="http://www.w3.org/2000/svg">
         <path d="M10,55 A40,40 0 0,1 90,55" fill="none" stroke="#1d3550" stroke-width="9" stroke-linecap="round"/>
         <path id="harc" d="M10,55 A40,40 0 0,1 90,55" fill="none" stroke="#2196f3" stroke-width="9"
           stroke-linecap="round" stroke-dasharray="0 126" style="transition:stroke-dasharray 1s"/>
-        <text x="50" y="50" text-anchor="middle" fill="#e8f4fd" font-size="15" id="hval">--%</text>
+        <text x="50" y="50" text-anchor="middle" fill="#e8f4fd" font-size="14" id="hval">--%</text>
       </svg>
       <div class="gl">💧 Humidade</div>
     </div>
@@ -319,105 +362,126 @@ body{display:flex;flex-direction:column}
         <path d="M10,55 A40,40 0 0,1 90,55" fill="none" stroke="#1d3550" stroke-width="9" stroke-linecap="round"/>
         <path id="uvarc" d="M10,55 A40,40 0 0,1 90,55" fill="none" stroke="#ffc107" stroke-width="9"
           stroke-linecap="round" stroke-dasharray="0 126" style="transition:stroke-dasharray 1s"/>
-        <text x="50" y="50" text-anchor="middle" fill="#e8f4fd" font-size="15" id="uvval">--</text>
+        <text x="50" y="50" text-anchor="middle" fill="#e8f4fd" font-size="14" id="uvval">--</text>
       </svg>
       <div class="gl">☀️ UV</div>
     </div>
   </div>
+  <div id="wr-wrap"><canvas id="wr"></canvas></div>
 </div>
 
-<!-- C2R2: PRESSÃO -->
-<div class="card" id="c-pres">
-  <div class="ctitle" style="grid-column:1/-1">🔵 Pressão &amp; Métricas</div>
-  <div class="pb"><div class="pbi">🔵</div><div class="pbl">Pressão</div><div class="pbv pulse" id="pres">----</div><div class="pbu">hPa</div><div class="pbt" id="pres-t">--</div></div>
-  <div class="pb"><div class="pbi">🌧</div><div class="pbl">Chuva</div><div class="pbv pulse" id="rain">--</div><div class="pbu">mm hoje</div><div class="pbt" id="rain-t">--</div></div>
-  <div class="pb"><div class="pbi">👁</div><div class="pbl">Visibilidade</div><div class="pbv pulse" id="vis">--</div><div class="pbu">km</div><div class="pbt" id="vis-t">--</div></div>
-  <div class="pb"><div class="pbi">💧</div><div class="pbl">Orvalho</div><div class="pbv pulse" id="dew2">--</div><div class="pbu">°C</div><div class="pbt" id="dew-t">--</div></div>
+<!-- MÉTRICAS -->
+<div class="card" id="c-pres" data-ki="3">
+  <div class="ct" style="grid-column:1/-1">🔵 Pressão &amp; Métricas</div>
+  <div class="pb">
+    <div class="pbi">🔵</div><div class="pbl">Pressão</div>
+    <div class="pbv pulse" id="pres">----</div><div class="pbu">hPa</div>
+    <div class="pbt" id="pres-t">--</div>
+  </div>
+  <div class="pb">
+    <div class="pbi">🌧</div><div class="pbl">Chuva hoje</div>
+    <div class="pbv pulse" id="rain">--</div><div class="pbu">mm</div>
+    <div class="pbt" id="rain-t">--</div>
+  </div>
+  <div class="pb">
+    <div class="pbi">👁</div><div class="pbl">Visibilidade</div>
+    <div class="pbv pulse" id="vis">--</div><div class="pbu">km</div>
+    <div class="pbt" id="vis-t">--</div>
+  </div>
+  <div class="pb">
+    <div class="pbi">🌱</div><div class="pbl">Hum. Solo</div>
+    <div class="pbv pulse" id="soil-v">--</div><div class="pbu">%</div>
+    <div class="sbar"><div class="sfil" id="soil-f" style="width:0%;background:#4caf50"></div></div>
+    <div class="pbt" id="et0-v" style="font-size:.6rem">ET₀: --</div>
+  </div>
 </div>
 
-<!-- C3R1: RISCO INCÊNDIO -->
-<div class="card" id="c-fire">
-  <div class="ctitle">🔥 Risco de Incêndio · Distrito de Leiria</div>
+<!-- FOGO -->
+<div class="card" id="c-fire" data-ki="4">
+  <div class="ct">🔥 Risco de Incêndio · Distrito de Leiria</div>
   <div class="fbody">
-    <div id="map-side">
-      <div class="maptitle">🗺 Concelho de Leiria (CAOP real)</div>
+    <div id="map-s">
+      <div class="mpt">🗺 Concelho de Leiria (CAOP real)</div>
       <div id="map-cnt">
-        <div id="mtt"><div id="mtt-name"></div><div id="mtt-risk"></div><div id="mtt-fwi"></div></div>
+        <div id="mtt"><div id="mtt-n"></div><div id="mtt-r"></div><div id="mtt-f"></div></div>
         <svg id="dmap" viewBox="0 0 300 260" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
           <rect width="300" height="260" fill="#060e18" rx="4"/>
-          <path id="mp-leiria" class="mun-leiria" data-name="Leiria" data-fwi=""
+          <path id="mp-l" class="mun-l" data-name="Leiria" data-rcm=""
             d="M87.65,27.68 L101.01,31.98 L111.02,35.54 L140.11,46.25 L154.96,52.3 L159.66,53.85 L162.96,55.65 L166.37,58.02 L171.11,60.03 L174.79,64.93 L176.14,68.67 L177.14,72.65 L177.68,75.81 L179.88,81.09 L190.84,91.32 L194.56,99.23 L199.87,102.17 L204.35,104.5 L208.9,104.45 L212.83,102.14 L217.28,102.2 L222.66,102.51 L226.76,105.23 L232.92,108.33 L236.0,110.01 L239.82,111.9 L243.36,113.32 L250.35,116.99 L255.59,119.91 L258.93,122.14 L264.89,126.56 L265.14,132.06 L259.59,132.13 L256.62,133.62 L254.33,135.07 L250.24,136.09 L248.33,137.31 L244.87,138.14 L243.85,138.89 L242.05,139.71 L238.41,140.59 L236.15,141.27 L233.76,141.93 L232.27,141.91 L230.61,142.44 L230.28,143.13 L229.64,144.12 L229.11,144.76 L228.28,145.38 L228.17,146.8 L228.34,147.63 L228.48,148.77 L228.37,149.8 L228.78,151.15 L228.46,152.08 L228.17,152.68 L228.21,153.47 L228.12,153.91 L228.21,154.7 L228.22,155.53 L228.24,156.09 L227.92,156.84 L227.62,157.4 L227.44,157.94 L227.11,159.06 L227.75,160.18 L228.43,160.62 L228.46,161.73 L228.98,162.73 L229.32,164.07 L229.7,166.13 L232.12,167.9 L233.05,171.07 L235.15,172.72 L238.21,174.02 L236.55,175.48 L233.15,175.5 L229.37,176.92 L227.76,179.09 L228.43,182.1 L229.06,185.17 L230.47,184.59 L232.15,184.52 L234.35,185.76 L236.18,185.65 L238.22,186.5 L240.17,187.24 L241.79,187.87 L244.05,189.06 L246.21,188.89 L248.21,189.19 L250.09,189.79 L251.78,189.91 L253.96,190.1 L255.41,190.94 L256.95,191.98 L259.8,194.28 L258.31,196.0 L256.0,199.06 L253.76,199.66 L252.74,202.26 L251.18,204.73 L252.88,206.95 L252.21,210.31 L249.79,213.6 L250.23,214.87 L248.75,216.34 L247.05,217.42 L245.46,217.91 L243.41,218.3 L241.46,218.89 L239.65,219.78 L237.36,220.97 L235.0,222.04 L232.75,222.87 L230.57,223.26 L229.94,225.54 L228.24,226.45 L226.23,226.58 L224.27,227.58 L221.57,228.57 L219.39,228.95 L216.47,230.07 L214.69,229.57 L213.55,230.36 L213.28,231.61 L210.81,227.9 L195.43,211.4 L183.41,208.85 L180.81,207.15 L176.04,205.07 L158.86,209.07 L148.12,207.04 L144.96,206.06 L141.97,202.6 L140.43,199.72 L138.2,196.82 L138.32,194.66 L136.42,194.05 L135.14,194.05 L134.26,194.36 L133.04,194.8 L130.24,195.05 L128.43,194.59 L125.87,194.44 L124.66,195.98 L123.8,196.76 L121.77,199.17 L119.77,199.87 L118.38,200.99 L115.89,202.27 L113.42,202.96 L111.22,204.14 L109.5,204.65 L108.37,205.68 L106.14,205.78 L104.49,206.55 L102.71,208.45 L100.7,210.63 L100.59,219.38 L98.25,222.56 L97.01,223.26 L95.18,223.42 L94.51,223.49 L93.57,224.31 L93.47,224.49 L91.25,224.79 L90.29,224.66 L89.61,224.57 L88.67,224.55 L88.57,224.75 L88.42,225.07 L88.34,225.49 L88.21,225.81 L87.99,226.15 L87.8,226.34 L87.46,226.6 L86.84,226.98 L86.6,227.23 L86.5,227.46 L86.25,227.88 L86.18,228.3 L86.19,228.75 L85.71,228.74 L85.27,228.68 L84.86,228.88 L84.31,228.93 L84.0,229.01 L83.65,229.17 L83.17,229.43 L82.76,229.63 L82.35,229.9 L82.06,230.03 L81.78,230.15 L81.38,230.3 L80.92,230.58 L80.5,230.76 L79.92,230.92 L79.39,230.9 L78.77,231.04 L78.39,231.2 L77.95,231.37 L77.48,231.32 L76.99,231.38 L76.68,231.54 L76.29,231.56 L75.9,231.71 L75.67,231.9 L75.27,232.01 L74.89,231.87 L74.02,231.9 L73.73,232.1 L73.22,232.19 L72.94,232.32 L72.55,231.76 L72.43,230.85 L71.65,229.06 L72.56,226.53 L73.29,224.3 L72.26,223.53 L72.87,223.26 L70.18,222.01 L69.96,221.11 L69.49,220.15 L69.73,219.31 L70.06,218.81 L70.44,217.95 L70.3,216.88 L70.33,216.04 L69.69,215.29 L69.84,214.45 L70.15,213.5 L70.35,212.13 L69.64,212.06 L68.63,212.5 L67.31,213.06 L66.04,213.02 L64.94,213.07 L63.64,213.08 L62.26,211.68 L60.17,210.87 L58.53,209.8 L56.15,208.94 L54.15,208.14 L52.94,203.92 L56.26,199.22 L58.19,197.65 L56.76,196.64 L57.93,194.83 L61.99,193.65 L66.13,187.95 L65.65,181.14 L69.97,181.71 L69.58,180.7 L68.9,178.26 L69.96,177.49 L72.06,175.7 L73.57,174.55 L79.43,174.58 L85.58,172.26 L90.04,166.82 L95.95,163.42 L96.1,158.12 L96.95,154.44 L98.87,150.99 L98.94,150.34 L99.09,149.25 L100.17,148.19 L101.14,147.02 L101.46,144.8 L89.91,136.35 L85.83,137.02 L80.48,136.8 L77.22,134.49 L76.28,129.84 L75.24,123.35 L77.13,121.04 L81.27,115.62 L80.25,104.39 L73.81,100.34 L66.66,92.61 L61.5,83.99 L67.08,83.88 L73.63,81.19 L79.01,79.71 L80.45,78.18 L82.81,75.59 L84.57,73.27 L58.67,66.39 L34.86,68.36 L37.88,61.46 L40.96,54.67 L43.46,50.08 L44.35,45.82 L47.91,39.81 L51.13,33.3 Z"/>
           <text x="146.7" y="181.5" text-anchor="middle" class="mun-lbl">Leiria</text>
-          <g id="mdot-batalha" class="mun-dot-g" data-name="Batalha" data-fwi="" transform="translate(128.53,217.2)"><circle r="13" class="mun-dot"/><text y="4" text-anchor="middle" class="mun-dot-lbl">Batalha</text></g>
-          <g id="mdot-marinha" class="mun-dot-g" data-name="Marinha Grande" data-fwi="" transform="translate(58.02,160.34)"><circle r="13" class="mun-dot"/><text y="4" text-anchor="middle" class="mun-dot-lbl">M. Grande</text></g>
-          <g id="mdot-pombal" class="mun-dot-g" data-name="Pombal" data-fwi="" transform="translate(263.91,48.84)"><circle r="13" class="mun-dot"/><text y="4" text-anchor="middle" class="mun-dot-lbl">Pombal</text></g>
+<g id="mdot-batalha" class="mdot-g" data-name="Batalha" data-rcm="" transform="translate(128.53,217.2)"><circle r="13" class="mdot"/><text y="4" text-anchor="middle" class="mdot-lbl">Batalha</text></g>
+<g id="mdot-marinha" class="mdot-g" data-name="Marinha Grande" data-rcm="" transform="translate(58.02,160.34)"><circle r="13" class="mdot"/><text y="4" text-anchor="middle" class="mdot-lbl">M. Grande</text></g>
+<g id="mdot-pombal" class="mdot-g" data-name="Pombal" data-rcm="" transform="translate(263.91,48.84)"><circle r="13" class="mdot"/><text y="4" text-anchor="middle" class="mdot-lbl">Pombal</text></g>
+          <g id="fires-g"></g>
         </svg>
       </div>
-      <div class="mlegend">
-        <div class="mleg"><div class="mleg-dot" style="background:#2e7d32"></div>Reduzido</div>
-        <div class="mleg"><div class="mleg-dot" style="background:#f9a825"></div>Moderado</div>
-        <div class="mleg"><div class="mleg-dot" style="background:#e65100"></div>Elevado</div>
-        <div class="mleg"><div class="mleg-dot" style="background:#b71c1c"></div>M.Elevado</div>
-        <div class="mleg"><div class="mleg-dot" style="background:#880e4f"></div>Máximo</div>
+      <div class="mleg-row">
+        <div class="mleg"><div class="mleg-d" style="background:#2e7d32"></div>Reduzido</div>
+        <div class="mleg"><div class="mleg-d" style="background:#f9a825"></div>Moderado</div>
+        <div class="mleg"><div class="mleg-d" style="background:#e65100"></div>Elevado</div>
+        <div class="mleg"><div class="mleg-d" style="background:#b71c1c"></div>M.Elev.</div>
+        <div class="mleg"><div class="mleg-d" style="background:#880e4f"></div>Máx.</div>
+        <div class="mleg"><div class="mleg-d" style="background:#ef4444"></div>🔥 Activo</div>
       </div>
     </div>
     <div id="fire-sb">
       <div class="fb" id="fb-mun">
-        <div class="fscope">Município de Leiria</div>
-        <div class="fbadge pulse" id="fbadge-mun">A carregar</div>
-        <div class="ffwi" id="ffwi-mun">--</div>
-        <div class="fdesc" id="fdesc-mun">--</div>
+        <div class="fsc">Município · Hoje</div>
+        <div class="fbdg pulse" id="fbdg-m">A carregar</div>
+        <div class="fd1"><span>Amanhã: </span><span class="fd1b" id="fd1-m">--</span></div>
+        <div class="fdsc" id="fdsc-m">--</div>
+        <div class="fsrc"><div class="fsrc-d" id="fsrc-d-m"></div><span id="fsrc-t-m">--</span></div>
       </div>
       <div class="fb" id="fb-dist">
-        <div class="fscope">Distrito de Leiria</div>
-        <div class="fbadge pulse" id="fbadge-dist">A carregar</div>
-        <div class="ffwi" id="ffwi-dist">--</div>
-        <div class="fdesc" id="fdesc-dist">--</div>
+        <div class="fsc">Distrito · Hoje</div>
+        <div class="fbdg pulse" id="fbdg-d">A carregar</div>
+        <div class="fd1"><span>Amanhã: </span><span class="fd1b" id="fd1-d">--</span></div>
+        <div class="fdsc" id="fdsc-d">--</div>
+        <div class="fsrc"><div class="fsrc-d" id="fsrc-d-d"></div><span id="fsrc-t-d">--</span></div>
       </div>
       <div id="mun-list">
-          <div class="mli" id="mli-alcobaca"><span class="mli-dot">●</span><span class="mli-name">Alcobaça</span><span class="mli-badge" id="mlb-alcobaca">--</span></div>
-          <div class="mli" id="mli-alvaiazere"><span class="mli-dot">●</span><span class="mli-name">Alvaiázere</span><span class="mli-badge" id="mlb-alvaiazere">--</span></div>
-          <div class="mli" id="mli-ansiao"><span class="mli-dot">●</span><span class="mli-name">Ansião</span><span class="mli-badge" id="mlb-ansiao">--</span></div>
-          <div class="mli" id="mli-batalha"><span class="mli-dot">●</span><span class="mli-name">Batalha</span><span class="mli-badge" id="mlb-batalha">--</span></div>
-          <div class="mli" id="mli-bombarral"><span class="mli-dot">●</span><span class="mli-name">Bombarral</span><span class="mli-badge" id="mlb-bombarral">--</span></div>
-          <div class="mli" id="mli-caldas"><span class="mli-dot">●</span><span class="mli-name">Caldas da Rainha</span><span class="mli-badge" id="mlb-caldas">--</span></div>
-          <div class="mli" id="mli-castanheira"><span class="mli-dot">●</span><span class="mli-name">Castanheira de Pêra</span><span class="mli-badge" id="mlb-castanheira">--</span></div>
-          <div class="mli" id="mli-figueiro"><span class="mli-dot">●</span><span class="mli-name">Figueiró dos Vinhos</span><span class="mli-badge" id="mlb-figueiro">--</span></div>
-          <div class="mli" id="mli-marinha"><span class="mli-dot">●</span><span class="mli-name">Marinha Grande</span><span class="mli-badge" id="mlb-marinha">--</span></div>
-          <div class="mli" id="mli-nazare"><span class="mli-dot">●</span><span class="mli-name">Nazaré</span><span class="mli-badge" id="mlb-nazare">--</span></div>
-          <div class="mli" id="mli-obidos"><span class="mli-dot">●</span><span class="mli-name">Óbidos</span><span class="mli-badge" id="mlb-obidos">--</span></div>
-          <div class="mli" id="mli-pedrogao"><span class="mli-dot">●</span><span class="mli-name">Pedrógão Grande</span><span class="mli-badge" id="mlb-pedrogao">--</span></div>
-          <div class="mli" id="mli-peniche"><span class="mli-dot">●</span><span class="mli-name">Peniche</span><span class="mli-badge" id="mlb-peniche">--</span></div>
-          <div class="mli" id="mli-pombal"><span class="mli-dot">●</span><span class="mli-name">Pombal</span><span class="mli-badge" id="mlb-pombal">--</span></div>
-          <div class="mli" id="mli-portodemos"><span class="mli-dot">●</span><span class="mli-name">Porto de Mós</span><span class="mli-badge" id="mlb-portodemos">--</span></div>
-      </div>
-      <div class="lblock">
-        <div class="ltitle">⚡ Trovoadas</div>
-        <div class="lrow">
-          <div class="lcell"><div class="lmin" style="color:#ef9a9a">0-30m</div><div class="lval" style="color:#ef4444" id="l30">--</div></div>
-          <div class="lcell"><div class="lmin" style="color:#ffb74d">30-60m</div><div class="lval" style="color:#ff9800" id="l60">--</div></div>
-          <div class="lcell"><div class="lmin" style="color:#ffe082">60-90m</div><div class="lval" style="color:#ffc107" id="l90">--</div></div>
+<div class="mli" id="mli-alcobaca"><span class="mli-dot">●</span><span class="mli-name">Alcobaça</span><span class="mli-badge" id="mlb-alcobaca">--</span></div>
+<div class="mli" id="mli-alvaiazere"><span class="mli-dot">●</span><span class="mli-name">Alvaiázere</span><span class="mli-badge" id="mlb-alvaiazere">--</span></div>
+<div class="mli" id="mli-ansiao"><span class="mli-dot">●</span><span class="mli-name">Ansião</span><span class="mli-badge" id="mlb-ansiao">--</span></div>
+<div class="mli" id="mli-batalha"><span class="mli-dot">●</span><span class="mli-name">Batalha</span><span class="mli-badge" id="mlb-batalha">--</span></div>
+<div class="mli" id="mli-bombarral"><span class="mli-dot">●</span><span class="mli-name">Bombarral</span><span class="mli-badge" id="mlb-bombarral">--</span></div>
+<div class="mli" id="mli-caldas"><span class="mli-dot">●</span><span class="mli-name">Caldas da Rainha</span><span class="mli-badge" id="mlb-caldas">--</span></div>
+<div class="mli" id="mli-castanheira"><span class="mli-dot">●</span><span class="mli-name">Castanheira de Pêra</span><span class="mli-badge" id="mlb-castanheira">--</span></div>
+<div class="mli" id="mli-figueiro"><span class="mli-dot">●</span><span class="mli-name">Figueiró dos Vinhos</span><span class="mli-badge" id="mlb-figueiro">--</span></div>
+<div class="mli" id="mli-marinha"><span class="mli-dot">●</span><span class="mli-name">Marinha Grande</span><span class="mli-badge" id="mlb-marinha">--</span></div>
+<div class="mli" id="mli-nazare"><span class="mli-dot">●</span><span class="mli-name">Nazaré</span><span class="mli-badge" id="mlb-nazare">--</span></div>
+<div class="mli" id="mli-obidos"><span class="mli-dot">●</span><span class="mli-name">Óbidos</span><span class="mli-badge" id="mlb-obidos">--</span></div>
+<div class="mli" id="mli-pedrogao"><span class="mli-dot">●</span><span class="mli-name">Pedrógão Grande</span><span class="mli-badge" id="mlb-pedrogao">--</span></div>
+<div class="mli" id="mli-peniche"><span class="mli-dot">●</span><span class="mli-name">Peniche</span><span class="mli-badge" id="mlb-peniche">--</span></div>
+<div class="mli" id="mli-pombal"><span class="mli-dot">●</span><span class="mli-name">Pombal</span><span class="mli-badge" id="mlb-pombal">--</span></div>
+<div class="mli" id="mli-portodemos"><span class="mli-dot">●</span><span class="mli-name">Porto de Mós</span><span class="mli-badge" id="mlb-portodemos">--</span></div></div>
+      <div class="lb">
+        <div class="lt">⚡ Trovoadas</div>
+        <div class="lr">
+          <div class="lc"><div class="lm" style="color:#ef9a9a">0-30m</div><div class="lv" style="color:#ef4444" id="l30">--</div></div>
+          <div class="lc"><div class="lm" style="color:#ffb74d">30-60m</div><div class="lv" style="color:#ff9800" id="l60">--</div></div>
+          <div class="lc"><div class="lm" style="color:#ffe082">60-90m</div><div class="lv" style="color:#ffc107" id="l90">--</div></div>
         </div>
         <div style="margin-top:4px;text-align:center">
           <a href="https://www.blitzortung.org/pt/live_lightning_maps.php" target="_blank"
-            style="color:var(--accent2);font-size:.63rem">↗ Blitzortung</a>
+            style="color:var(--accent2);font-size:.62rem">↗ Blitzortung</a>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- C3R2: AQI -->
-<div class="card" id="c-aqi">
-  <div class="ctitle">🌍 Qualidade do Ar</div>
-  <div class="aqi-row">
-    <div id="aqi-num" class="pulse">--</div>
-    <div class="aqi-right">
-      <div id="aqi-desc" class="pulse">--</div>
-      <div class="aqi-sub">Índice AQI Europeu · Leiria</div>
-      <div id="aqi-advice">--</div>
-      <div class="aqi-track"><div id="aqi-mk"></div></div>
-      <div class="aqi-scale"><span>Muito Bom</span><span>Bom</span><span>Médio</span><span>Mau</span><span>Muito Mau</span></div>
+<!-- AQI -->
+<div class="card" id="c-aqi" data-ki="5">
+  <div class="ct">🌍 Qualidade do Ar</div>
+  <div class="aqi-r">
+    <div id="aqi-n" class="pulse">--</div>
+    <div class="aqi-ri">
+      <div id="aqi-d" class="pulse">--</div>
+      <div class="aqi-s">Índice AQI Europeu · Leiria</div>
+      <div id="aqi-a">--</div>
+      <div class="aqi-t"><div id="aqi-m"></div></div>
+      <div class="aqi-sc"><span>Muito Bom</span><span>Bom</span><span>Médio</span><span>Mau</span><span>Muito Mau</span></div>
     </div>
   </div>
 </div>
@@ -425,19 +489,37 @@ body{display:flex;flex-direction:column}
 </div><!-- /grid -->
 </div><!-- /app -->
 
+<!-- KIOSK BAR -->
+<div id="kiosk-bar">
+  <div class="kdot on" id="kd-0"></div><div class="kdot" id="kd-1"></div>
+  <div class="kdot" id="kd-2"></div><div class="kdot" id="kd-3"></div>
+  <div class="kdot" id="kd-4"></div><div class="kdot" id="kd-5"></div>
+</div>
+
+<!-- QR MODAL -->
+<div id="qr-modal">
+  <div id="qr-box">
+    <h3>Partilhar Dashboard</h3>
+    <canvas id="qr-canvas" width="160" height="160"></canvas>
+    <span id="qr-url"></span>
+    <button id="qr-close" onclick="hideQR()">Fechar</button>
+  </div>
+</div>
+
 <script>
 const LAT=39.7436,LON=-8.8071,TZ='Europe/Lisbon';
-let countdown=300,tHourly=[],tTimes=[];
+let countdown=300,windDirs7=[],_p7T=[],_p7L=[],_fT=[],_fL=[],kioskIdx=0,kioskTimer=null;
 
-// ── HELPERS ──────────────────────────────────────────────────────────
 const $=id=>document.getElementById(id);
-const fmtT=iso=>new Date(iso).toLocaleTimeString('pt-PT',{hour:'2-digit',minute:'2-digit',timeZone:TZ});
-const fmtDS=iso=>{const d=new Date(iso),t=new Date();
+const fmt_t=iso=>new Date(iso).toLocaleTimeString('pt-PT',{hour:'2-digit',minute:'2-digit',timeZone:TZ});
+const fmt_ds=iso=>{const d=new Date(iso),t=new Date();
   return d.toDateString()===t.toDateString()?'Hoje':
     d.toLocaleDateString('pt-PT',{weekday:'short',timeZone:TZ}).replace('.','').toUpperCase()};
 const rp=id=>{const e=$(id);if(e)e.classList.remove('pulse')};
+function saveC(k,v){try{localStorage.setItem('ml_'+k,JSON.stringify({ts:Date.now(),v}))}catch{}}
+function loadC(k,ms=3600000){try{const r=JSON.parse(localStorage.getItem('ml_'+k)||'null');
+  return r&&(Date.now()-r.ts)<ms?r.v:null}catch{return null}}
 
-// ── WEATHER CODES ────────────────────────────────────────────────────
 function wCode(c){
   if(c===0)return['☀️','Céu limpo'];if(c<=2)return['⛅','Parcialmente nublado'];
   if(c===3)return['☁️','Nublado'];if(c<=48)return['🌫','Nevoeiro'];
@@ -445,226 +527,104 @@ function wCode(c){
   if(c<=75)return['❄️','Neve'];if(c<=82)return['🌦','Aguaceiros'];return['⛈','Trovoada']}
 
 const DIRS=['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSO','SO','OSO','O','ONO','NO','NNO'];
-const windFromDir=d=>DIRS[Math.round(d/22.5)%16];
+const wDir=d=>DIRS[Math.round(d/22.5)%16];
 
-// ── AQI ──────────────────────────────────────────────────────────────
 function aqiInfo(v){
   if(v<=20)return['Muito Bom','#4caf50','Qualidade excelente'];
-  if(v<=40)return['Bom','#8bc34a','Qualidade boa'];
+  if(v<=40)return['Bom','#8bc34a','Qualidade boa para todos'];
   if(v<=60)return['Médio','#ffc107','Grupos sensíveis afectados'];
   if(v<=80)return['Mau','#ff9800','Reduzir actividade exterior'];
   if(v<=100)return['Muito Mau','#f44336','Evitar exterior'];
   return['Extremo','#9c27b0','Ficar em casa']}
 
-// ── RCM (IPMA+ICNF) ──────────────────────────────────────────────────
-// Escala: 1=Reduzido 2=Moderado 3=Elevado 4=MuitoElevado 5=Máximo
-const RCM_LV={
-  1:{label:'Reduzido',   color:'#4caf50',fill:'#2e7d32',bg:'#0a1f0a',desc:'Risco reduzido'},
-  2:{label:'Moderado',   color:'#ffc107',fill:'#f9a825',bg:'#1f1700',desc:'Risco moderado'},
-  3:{label:'Elevado',    color:'#ff9800',fill:'#e65100',bg:'#1f0d00',desc:'Risco elevado'},
-  4:{label:'M. Elevado', color:'#f44336',fill:'#b71c1c',bg:'#1f0505',desc:'Risco muito elevado'},
-  5:{label:'Máximo',     color:'#e91e63',fill:'#880e4f',bg:'#1a0010',desc:'Risco máximo'},
-};
-const NO_DATA={label:'--',color:'#607d8b',fill:'#1a2228',bg:'#111',desc:'Sem dados'};
+const RCM={
+  1:{label:'Reduzido',  color:'#4caf50',fill:'#2e7d32',bg:'#0a1f0a',desc:'Risco reduzido'},
+  2:{label:'Moderado',  color:'#ffc107',fill:'#f9a825',bg:'#1f1700',desc:'Risco moderado'},
+  3:{label:'Elevado',   color:'#ff9800',fill:'#e65100',bg:'#1f0d00',desc:'Risco elevado'},
+  4:{label:'M. Elevado',color:'#f44336',fill:'#b71c1c',bg:'#1f0505',desc:'Risco muito elevado'},
+  5:{label:'Máximo',    color:'#e91e63',fill:'#880e4f',bg:'#1a0010',desc:'Risco máximo'}};
+const ND={label:'--',color:'#607d8b',fill:'#1a2228',bg:'#111',desc:'Sem dados'};
+const rcmLv=r=>RCM[r]??ND;
 
-function rcmLv(rcm){return RCM_LV[rcm]??NO_DATA}
-function rcmFWI(rcm){return{1:2.5,2:8,3:15,4:28,5:45}[rcm]??null}
+function srcInfo(s){
+  if(!s||s==='--')return{c:'#607d8b',l:'--'};
+  if(s.includes('IPMA+ICNF'))return{c:'#4caf50',l:'IPMA+ICNF oficial'};
+  if(s.includes('ICNF'))return{c:'#8bc34a',l:'ICNF scraping'};
+  if(s.includes('proxy'))return{c:'#ffc107',l:'Via proxy'};
+  return{c:'#7a9db8',l:'Estimativa'};}
 
-// Apply RCM to a badge block
-function applyBadge(badgeId,fwiId,descId,blockId,rcm,source){
+function applyBadge(bdgId,d1Id,dscId,blkId,fsrcDId,fsrcTId,rcm,rcmD1,src){
   const lv=rcmLv(rcm);
-  $(badgeId).textContent='🔥 '+lv.label;$(badgeId).style.color=lv.color;
-  $(badgeId).style.background=lv.bg;$(badgeId).classList.remove('pulse');
-  $(fwiId).textContent=rcm?`RCM: ${rcm}/5 · ${source}`:'Sem dados oficiais';
-  $(descId).textContent=lv.desc;$(descId).style.color=lv.color;
-  $(blockId).style.borderColor=lv.color+'66'}
+  $(bdgId).textContent='🔥 '+(rcm?lv.label:'A carregar...');
+  $(bdgId).style.color=lv.color;$(bdgId).style.background=lv.bg;$(bdgId).classList.remove('pulse');
+  $(dscId).textContent=lv.desc;$(dscId).style.color=lv.color;
+  $(blkId).style.borderColor=lv.color+'66';
+  if(d1Id){const lv1=rcmLv(rcmD1);$(d1Id).textContent=rcmD1?lv1.label:'--';$(d1Id).style.color=rcmD1?lv1.color:'#607d8b';}
+  const si=srcInfo(src);
+  if(fsrcDId)$(fsrcDId).style.background=si.c;
+  if(fsrcTId){$(fsrcTId).textContent=si.l;$(fsrcTId).style.color=si.c+'cc';}}
 
-// DICO CAOP → HTML slug (id="mli-{slug}")
-const DICO={
-  '1001':'alcobaca','1002':'alvaiazere','1003':'ansiao','1004':'batalha',
+const DICO={'1001':'alcobaca','1002':'alvaiazere','1003':'ansiao','1004':'batalha',
   '1005':'bombarral','1006':'caldas','1007':'castanheira','1008':'figueiro',
   '1009':'leiria','1010':'marinha','1011':'nazare','1012':'obidos',
   '1013':'pedrogao','1014':'peniche','1015':'pombal','1016':'portodemos'};
-
-const DICO_NAME={
-  '1001':'Alcobaça','1002':'Alvaiázere','1003':'Ansião','1004':'Batalha',
+const DICO_N={'1001':'Alcobaça','1002':'Alvaiázere','1003':'Ansião','1004':'Batalha',
   '1005':'Bombarral','1006':'Caldas da Rainha','1007':'Castanheira de Pêra',
   '1008':'Figueiró dos Vinhos','1009':'Leiria','1010':'Marinha Grande',
   '1011':'Nazaré','1012':'Óbidos','1013':'Pedrógão Grande','1014':'Peniche',
   '1015':'Pombal','1016':'Porto de Mós'};
 
-// Apply RCM to a single municipality slug
 function applyMun(slug,rcm){
-  if(!slug)return;
   const lv=rcmLv(rcm);
-  // sidebar badge
-  const badge=$('mlb-'+slug);
-  const dot=document.querySelector('#mli-'+slug+' .mli-dot');
-  if(dot)dot.style.color=lv.color;
-  if(badge){badge.textContent=rcm?lv.label:'--';badge.style.color=lv.color;badge.style.borderColor=lv.color+'55';}
-  // map dot
+  const b=$('mlb-'+slug),d=document.querySelector('#mli-'+slug+' .mli-dot');
+  if(d)d.style.color=lv.color;
+  if(b){b.textContent=rcm?lv.label:'--';b.style.color=lv.color;b.style.borderColor=lv.color+'55';}
   const g=$('mdot-'+slug);
-  if(g){
-    g.dataset.fwi=rcm?String(rcmFWI(rcm)):'';
-    const c=g.querySelector('.mdot');if(c)c.style.fill=lv.fill;
+  if(g){g.dataset.rcm=rcm??'';const c=g.querySelector('.mdot');if(c)c.style.fill=lv.fill;
     const l=g.querySelector('.mdot-lbl');if(l)l.style.fill=lv.color;}
-  // Leiria polygon
-  if(slug==='leiria'){
-    const p=$('mp-leiria');
-    if(p){p.style.fill=lv.fill+'cc';p.dataset.fwi=rcm?String(rcmFWI(rcm)):'';}
-  }
+  if(slug==='leiria'){const p=$('mp-l');if(p){p.style.fill=lv.fill+'cc';p.dataset.rcm=rcm??'';}}
 }
 
-// ── MAP TOOLTIP ───────────────────────────────────────────────────────
-const mtt=$('mtt'),mttN=$('mtt-name'),mttR=$('mtt-risk'),mttF=$('mtt-fwi');
-document.querySelectorAll('.mun-leiria,.mdot-g').forEach(el=>{
+// Tooltip
+const mtt=$('mtt'),mttN=$('mtt-n'),mttR=$('mtt-r'),mttF=$('mtt-f');
+document.querySelectorAll('.mun-l,.mdot-g').forEach(el=>{
   el.addEventListener('mousemove',e=>{
-    const rcm=el.dataset.fwi?Math.round(parseFloat(el.dataset.fwi)):null;
-    const lv=rcmLv(rcm); // approximate
+    const r=el.dataset.rcm?parseInt(el.dataset.rcm):null;const lv=rcmLv(r);
     mttN.textContent=el.dataset.name??'Leiria';
-    // Show label from actual rcm stored
-    const r=el.dataset.rcm?parseInt(el.dataset.rcm):null;
-    const lv2=rcmLv(r);
-    mttR.textContent='🔥 '+(r?lv2.label:'A carregar...');mttR.style.color=lv2.color;
-    mttF.textContent=r?`RCM: ${r}/5`:'';
+    mttR.textContent='🔥 '+(r?lv.label:'A carregar...');mttR.style.color=lv.color;
+    mttF.textContent=r?`RCM: ${r}/5 — ${lv.desc}`:'';
     const c=$('map-cnt').getBoundingClientRect();
     let x=e.clientX-c.left+12,y=e.clientY-c.top+12;
-    if(x+170>c.width)x=e.clientX-c.left-175;
-    if(y+60>c.height)y=e.clientY-c.top-65;
+    if(x+170>c.width)x=e.clientX-c.left-175;if(y+65>c.height)y=e.clientY-c.top-70;
     mtt.style.left=x+'px';mtt.style.top=y+'px';mtt.style.display='block';});
   el.addEventListener('mouseleave',()=>mtt.style.display='none');});
 
-// ── FIRE RISK ─────────────────────────────────────────────────────────
-async function fetchFire(){
-  // mapa: DICO→slug, com RCM real por município
-  let allRCM={};  // slug → rcm (1-5)
-  let source='--';
-
-  // 1) IPMA API open-data
-  try{
-    const ctrl=new AbortController();setTimeout(()=>ctrl.abort(),8000);
-    const r=await fetch('https://api.ipma.pt/open-data/forecast/meteorology/rcm/rcm-d0.json',{signal:ctrl.signal});
-    if(r.ok){
-      const d=await r.json();
-      const loc=d?.local??{};
-      const dp=d?.dataPrev??'';
-      let n=0;
-      Object.entries(DICO).forEach(([dico,slug])=>{
-        const rcm=loc[dico]?.data?.rcm??null;
-        if(rcm!==null){allRCM[slug]=rcm;n++;}
-      });
-      if(n>0){source='IPMA+ICNF'+(dp?' · '+dp:'');
-        console.log(`IPMA OK: ${n} concelhos, Leiria=${allRCM.leiria}, data=${dp}`);}
-    }
-  }catch(e){console.warn('IPMA:',e.message??e);}
-
-  // 2) ICNF HTML scraping (browser fetch, sem proxy)
-  if(!allRCM.leiria){
-    console.log('A tentar ICNF scraping...');
-    const BASE='https://fogos.icnf.pt/rif/Stat_Global_Sensibilizacao_Riscolist.asp';
-    const tasks=Object.entries(DICO_NAME).map(async([dico,name])=>{
-      const slug=DICO[dico];
-      try{
-        const ctrl=new AbortController();setTimeout(()=>ctrl.abort(),8000);
-        const url=`${BASE}?cmd=search&t=Stat_Global_Sensibilizacao_Risco&z_Distrito=LIKE&x_Distrito=Leiria&z_Concelho=LIKE&x_Concelho=${encodeURIComponent(name)}`;
-        const r=await fetch(url,{signal:ctrl.signal});
-        if(!r.ok)return;
-        const html=await r.text();
-        let rcm=null;
-        if(/MUITO ELEVADO/i.test(html))rcm=4;
-        else if(/M[ÁA]XIMO/i.test(html))rcm=5;
-        else if(/ELEVADO/i.test(html))rcm=3;
-        else if(/MODERADO/i.test(html))rcm=2;
-        else if(/REDUZIDO/i.test(html))rcm=1;
-        if(rcm!==null){allRCM[slug]=rcm;console.log(`ICNF ${name}: RCM=${rcm}`);}
-      }catch(e){console.warn(`ICNF ${name}:`,e.message??'timeout');}
-    });
-    await Promise.allSettled(tasks);
-    if(allRCM.leiria)source='ICNF (fogos.icnf.pt)';
-  }
-
-  // 3) Fallback meteorológico calibrado (sempre tem resultado)
-  if(!allRCM.leiria){
-    try{
-      const wx=await(await fetch(
-        `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}`+
-        `&current=temperature_2m,relative_humidity_2m,wind_speed_10m`+
-        `&daily=precipitation_sum&past_days=7&timezone=${TZ}&forecast_days=1`
-      )).json();
-      const T=wx.current.temperature_2m,H=wx.current.relative_humidity_2m,W=wx.current.wind_speed_10m;
-      const r7=(wx.daily?.precipitation_sum||[]).slice(0,7).reduce((a,b)=>a+(b||0),0);
-      let b;
-      if(T<12||H>85||(H>70&&r7>15))b=1;
-      else if((T<20&&H>60)||r7>10)  b=2;
-      else if(T<26&&H>45)           b=2;
-      else if(T<30&&H>35)           b=3;
-      else if(T<35&&H>20&&W<30)     b=3;
-      else if(T<38&&H>15&&W<40)     b=4;
-      else                           b=5;
-      if(r7>30&&b>1)b--;else if(r7>15&&b>2)b--;
-      // variação geográfica por exposição
-      const OFF={alcobaca:-1,alvaiazere:1,ansiao:2,batalha:0,bombarral:-2,caldas:-1,
-        castanheira:3,figueiro:3,leiria:0,marinha:-1,nazare:-1,obidos:-2,
-        pedrogao:4,peniche:-2,pombal:2,portodemos:1};
-      Object.entries(OFF).forEach(([slug,off])=>{
-        allRCM[slug]=Math.max(1,Math.min(5,b+off));});
-      source=`Estimativa (T=${T}°C H=${H}% chuva7=${r7.toFixed(0)}mm)`;
-      console.log('Fallback RCM base='+b,allRCM);
-    }catch(e){console.warn('Fallback:',e);}
-  }
-
-  // Aplicar a todos os municípios
-  Object.entries(DICO).forEach(([dico,slug])=>{
-    const rcm=allRCM[slug]??null;
-    // store on element for tooltip
-    const el=$('mp-leiria');
-    if(slug==='leiria'&&el)el.dataset.rcm=rcm??'';
-    const g=$('mdot-'+slug);
-    if(g)g.dataset.rcm=rcm??'';
-    applyMun(slug,rcm);
-  });
-
-  // Agregado do distrito (percentil 80, método IPMA)
-  const munRCM=allRCM.leiria??null;
-  const vals=Object.values(allRCM).filter(v=>v>0);
-  let distRCM=null;
-  if(vals.length){const s=vals.slice().sort((a,b)=>a-b);distRCM=s[Math.floor(s.length*.8)]??s[s.length-1];}
-
-  applyBadge('fbadge-mun','ffwi-mun','fdesc-mun','fb-mun',munRCM,source);
-  applyBadge('fbadge-dist','ffwi-dist','fdesc-dist','fb-dist',distRCM,source);
-}
-
-// ── MOON ─────────────────────────────────────────────────────────────
 function moonPhase(){
   const p=((( new Date()-new Date('2000-01-06'))/864e5)%29.53059+29.53059)%29.53059;
   return p<1.85?'🌑 Lua Nova':p<7.38?'🌒 Quarto Crescente':p<14.77?'🌕 Lua Cheia':p<22.15?'🌘 Quarto Minguante':'🌑 Lua Nova';}
 
-// ── SOLAR BAR ─────────────────────────────────────────────────────────
-function updateSolar(srISO,ssISO){
-  const sr=new Date(srISO),ss=new Date(ssISO),now=new Date();
-  ['sol-sr','sunrise'].forEach(id=>$(id)&&($(id).textContent=fmtT(srISO)));
-  ['sol-ss','sunset'].forEach(id=>$(id)&&($(id).textContent=fmtT(ssISO)));
-  const pct=Math.max(0,Math.min(100,((now-sr)/(ss-sr))*100));
-  const isDay=now>=sr&&now<=ss;
+function updateSolar(sr,ss){
+  const srD=new Date(sr),ssD=new Date(ss),now=new Date();
+  ['sol-sr','sunrise'].forEach(id=>$(id)&&($(id).textContent=fmt_t(sr)));
+  ['sol-ss','sunset'].forEach(id=>$(id)&&($(id).textContent=fmt_t(ss)));
+  const pct=Math.max(0,Math.min(100,((now-srD)/(ssD-srD))*100));
+  const isDay=now>=srD&&now<=ssD;
   $('sol-fill').style.width=(isDay?pct:0)+'%';$('sol-sun').style.left=(isDay?pct:0)+'%';
-  const dh=Math.floor((ss-sr)/36e5),dm=Math.floor(((ss-sr)%36e5)/6e4);
+  const dh=Math.floor((ssD-srD)/36e5),dm=Math.floor(((ssD-srD)%36e5)/6e4);
   $('sol-dur').textContent=`${dh}h ${dm}m`;}
 
-// ── CLOCK ─────────────────────────────────────────────────────────────
 function tickClock(){
   const now=new Date();
   $('clock').textContent=now.toLocaleTimeString('pt-PT',{timeZone:TZ,hour12:false});
-  $('clock-date').textContent=now.toLocaleDateString('pt-PT',{weekday:'long',day:'2-digit',month:'long',year:'numeric',timeZone:TZ});
+  $('cdate').textContent=now.toLocaleDateString('pt-PT',{weekday:'long',day:'2-digit',month:'long',year:'numeric',timeZone:TZ});
   countdown--;const m=Math.floor(countdown/60),s=countdown%60;
-  $('nxt-upd').textContent=`${m}:${s.toString().padStart(2,'0')}`;
+  $('nxt').textContent=`${m}:${s.toString().padStart(2,'0')}`;
   if(countdown<=0){countdown=300;refreshAll();}}
 
-// ── ARC GAUGE ─────────────────────────────────────────────────────────
 function setArc(id,pct,color){
   const a=$(id);if(!a)return;const d=Math.round(pct/100*126);
   a.setAttribute('stroke-dasharray',`${d} ${126-d}`);a.setAttribute('stroke',color);}
 
-// ── COMFORT INDEX ─────────────────────────────────────────────────────
 function comfortIdx(t,h,w){
   if(t>=27){const hi=t-(0.55-0.0055*h)*(t-14.5);
     if(hi>=41)return['🔴 Muito Quente','#f44336','#1f0505'];
@@ -677,139 +637,301 @@ function comfortIdx(t,h,w){
   if(h>80)return['🟡 Abafado','#ffc107','#1f1700'];
   return['🟢 Confortável','#4caf50','#0a1f0a'];}
 
-// ── CHARTS ───────────────────────────────────────────────────────────
+// Rosa dos ventos
+function drawRose(dirs){
+  const c=$('wr');if(!c||!dirs.length)return;
+  const wrap=$('wr-wrap'),sz=Math.min(wrap.offsetWidth||100,100);
+  c.width=sz;c.height=sz;
+  const ctx=c.getContext('2d'),cx=sz/2,cy=sz/2,R=sz/2-4;
+  ctx.clearRect(0,0,sz,sz);
+  const bins=new Array(16).fill(0);
+  dirs.forEach(d=>{bins[Math.round(d/22.5)%16]++;});
+  const mx=Math.max(...bins,1);
+  bins.forEach((cnt,i)=>{
+    if(cnt===0)return;
+    const angle=(i/16)*Math.PI*2-Math.PI/2,r=(cnt/mx)*R*.85,spread=Math.PI/16;
+    ctx.beginPath();ctx.moveTo(cx,cy);
+    ctx.arc(cx,cy,r,angle-spread,angle+spread);ctx.closePath();
+    ctx.fillStyle=`rgba(33,150,243,${0.3+0.7*(cnt/mx)})`;ctx.fill();});
+  [.33,.67,1].forEach(f=>{
+    ctx.beginPath();ctx.arc(cx,cy,R*f,0,Math.PI*2);
+    ctx.strokeStyle='rgba(30,64,80,.4)';ctx.lineWidth=.8;ctx.stroke();});
+  const fs=Math.max(8,sz/14);
+  ctx.fillStyle='#6a90a8';ctx.font=`${fs}px Segoe UI`;ctx.textAlign='center';
+  [['N',0],['E',Math.PI/2],['S',Math.PI],['O',-Math.PI/2]].forEach(([l,a])=>
+    ctx.fillText(l,cx+Math.sin(a)*(R+4),cy-Math.cos(a)*(R+4)+3));}
+
+// Gráfico chuva
 function drawRain(labels,vals){
-  const c=$('rain-chart');if(!c||!vals.length)return;
-  c.width=$('rain-wrap').offsetWidth||300;c.height=44;
-  const ctx=c.getContext('2d'),W=c.width,H=44,pad={l:28,r:6,t:4,b:16};
+  const c=$('rc');if(!c||!vals.length)return;
+  c.width=$('rw').offsetWidth||300;c.height=42;
+  const ctx=c.getContext('2d'),W=c.width,H=42,pad={l:26,r:5,t:4,b:15};
   const mx=Math.max(...vals,1),bw=(W-pad.l-pad.r)/vals.length;
   ctx.clearRect(0,0,W,H);
   vals.forEach((v,i)=>{
     const x=pad.l+i*bw+bw*.1,bh=Math.max(v<.1?1:3,((v/mx)*(H-pad.t-pad.b))),y=H-pad.b-bh;
     ctx.fillStyle=v<.1?'rgba(100,150,200,.18)':'rgba(33,150,243,.85)';
-    ctx.beginPath();if(ctx.roundRect)ctx.roundRect(x,y,bw*.8,bh,2);else ctx.rect(x,y,bw*.8,bh);
-    ctx.fill();
+    ctx.beginPath();if(ctx.roundRect)ctx.roundRect(x,y,bw*.8,bh,2);else ctx.rect(x,y,bw*.8,bh);ctx.fill();
     ctx.fillStyle='#7a9db8';ctx.font='8px Segoe UI';ctx.textAlign='center';
     ctx.fillText(labels[i],x+bw*.4,H-2);
     if(v>=.5){ctx.fillStyle='#64b5f6';ctx.font='7px Segoe UI';ctx.fillText(v.toFixed(1),x+bw*.4,y-1);}});
   ctx.fillStyle='#6a90a8';ctx.font='8px Segoe UI';ctx.textAlign='right';
   ctx.fillText(mx.toFixed(0)+'mm',pad.l-2,pad.t+8);}
 
-function drawTemp(){
-  const c=$('temp-chart');if(!c||!tHourly.length)return;
-  const wrap=$('temp-wrap');c.width=wrap.offsetWidth;c.height=wrap.offsetHeight;
-  const ctx=c.getContext('2d'),W=c.width,H=c.height,pad={t:12,r:12,b:22,l:36};
-  const data=tHourly.slice(0,24),mn=Math.min(...data)-1,mx=Math.max(...data)+1;
-  const xS=i=>(i/(data.length-1))*(W-pad.l-pad.r)+pad.l;
-  const yS=v=>H-pad.b-((v-mn)/(mx-mn))*(H-pad.t-pad.b);
-  ctx.clearRect(0,0,W,H);
-  const gr=ctx.createLinearGradient(0,pad.t,0,H-pad.b);
-  gr.addColorStop(0,'rgba(33,150,243,.28)');gr.addColorStop(1,'rgba(33,150,243,.02)');
-  ctx.beginPath();ctx.moveTo(xS(0),yS(data[0]));
-  data.forEach((_,i)=>{if(i>0)ctx.lineTo(xS(i),yS(data[i]));});
-  ctx.lineTo(xS(data.length-1),H-pad.b);ctx.lineTo(xS(0),H-pad.b);ctx.closePath();
-  ctx.fillStyle=gr;ctx.fill();
-  ctx.beginPath();ctx.strokeStyle='#2196f3';ctx.lineWidth=2.5;ctx.lineJoin='round';
-  data.forEach((_,i)=>i===0?ctx.moveTo(xS(i),yS(data[i])):ctx.lineTo(xS(i),yS(data[i])));
-  ctx.stroke();
-  ctx.fillStyle='#7a9db8';ctx.font='10px Segoe UI';ctx.textAlign='right';
-  [mn+1,Math.round((mn+mx)/2),mx-1].forEach(v=>ctx.fillText(Math.round(v)+'°',pad.l-5,yS(v)+4));
-  ctx.textAlign='center';ctx.font='9.5px Segoe UI';
-  for(let i=0;i<data.length;i+=4)if(tTimes[i])ctx.fillText(tTimes[i],xS(i),H-5);}
+// Gráfico temperatura — DUAS ZONAS CLARAS:
+// Zona esquerda (60%): histórico 7 dias, 1 ponto/4h, eixo X = dia da semana
+// Zona direita (40%): próximas 24h, 1 ponto/hora, eixo X = hora
+// Separador visual "AGORA" ao centro
+function drawTemp(p7,p7l,ft,ftl){
+  if(!p7||!ft)return;
+  const canvas=$('tc');if(!canvas)return;
+  const wrap=$('tw');
+  canvas.width=wrap.offsetWidth;canvas.height=wrap.offsetHeight;
+  const ctx=canvas.getContext('2d'),W=canvas.width,H=canvas.height;
+  if(W<10||H<10)return;
 
-// ── FETCH WEATHER ─────────────────────────────────────────────────────
+  const pad={t:18,r:8,b:22,l:32};
+  // Split canvas: 58% past, 42% future
+  const splitX=Math.round((W-pad.l-pad.r)*0.58)+pad.l;
+  const all=[...p7,...ft];
+  if(!all.length)return;
+  const mn=Math.min(...all)-2,mx=Math.max(...all)+2;
+  const yS=v=>H-pad.b-((v-mn)/(mx-mn))*(H-pad.t-pad.b);
+
+  ctx.clearRect(0,0,W,H);
+
+  // ── Background zones ──
+  // Past: subtle dark
+  ctx.fillStyle='rgba(100,181,246,.03)';
+  ctx.fillRect(pad.l,pad.t,splitX-pad.l,H-pad.t-pad.b);
+  // Future: slightly lighter
+  ctx.fillStyle='rgba(33,150,243,.05)';
+  ctx.fillRect(splitX,pad.t,W-pad.r-splitX,H-pad.t-pad.b);
+
+  // ── PAST line (7 days) ──
+  if(p7.length>1){
+    const pxS=i=>pad.l+(i/(p7.length-1))*(splitX-pad.l-2);
+    // gradient fill
+    const gr=ctx.createLinearGradient(0,pad.t,0,H-pad.b);
+    gr.addColorStop(0,'rgba(100,181,246,.18)');gr.addColorStop(1,'rgba(100,181,246,.01)');
+    ctx.beginPath();ctx.moveTo(pxS(0),yS(p7[0]));
+    p7.forEach((_,i)=>{if(i>0)ctx.lineTo(pxS(i),yS(p7[i]));});
+    ctx.lineTo(pxS(p7.length-1),H-pad.b);ctx.lineTo(pxS(0),H-pad.b);ctx.closePath();
+    ctx.fillStyle=gr;ctx.fill();
+    // dashed line
+    ctx.beginPath();ctx.setLineDash([4,3]);
+    ctx.strokeStyle='#64b5f6';ctx.lineWidth=1.5;ctx.lineJoin='round';
+    p7.forEach((_,i)=>i===0?ctx.moveTo(pxS(i),yS(p7[i])):ctx.lineTo(pxS(i),yS(p7[i])));
+    ctx.stroke();ctx.setLineDash([]);
+    // X labels: unique days only
+    const seenDays=new Set();
+    ctx.fillStyle='#7a9db8';ctx.font='8.5px Segoe UI';ctx.textAlign='center';
+    p7l.forEach((lbl,i)=>{
+      if(!lbl)return;
+      // show label if day changed (first occurrence of each day label)
+      if(!seenDays.has(lbl)){seenDays.add(lbl);
+        ctx.fillText(lbl,pxS(i),H-5);}
+    });
+  }
+
+  // ── FUTURE line (24h) ──
+  if(ft.length>1){
+    const fxS=i=>splitX+4+(i/(ft.length-1))*(W-pad.r-splitX-4);
+    // gradient fill
+    const gr2=ctx.createLinearGradient(0,pad.t,0,H-pad.b);
+    gr2.addColorStop(0,'rgba(33,150,243,.32)');gr2.addColorStop(1,'rgba(33,150,243,.02)');
+    ctx.beginPath();ctx.moveTo(fxS(0),yS(ft[0]));
+    ft.forEach((_,i)=>{if(i>0)ctx.lineTo(fxS(i),yS(ft[i]));});
+    ctx.lineTo(fxS(ft.length-1),H-pad.b);ctx.lineTo(fxS(0),H-pad.b);ctx.closePath();
+    ctx.fillStyle=gr2;ctx.fill();
+    // solid line
+    ctx.beginPath();ctx.strokeStyle='#2196f3';ctx.lineWidth=2.2;ctx.lineJoin='round';
+    ft.forEach((_,i)=>i===0?ctx.moveTo(fxS(i),yS(ft[i])):ctx.lineTo(fxS(i),yS(ft[i])));
+    ctx.stroke();
+    // X labels: every 6h
+    ctx.fillStyle='#7a9db8';ctx.font='8.5px Segoe UI';ctx.textAlign='center';
+    ftl.forEach((lbl,i)=>{if(i%6===0&&lbl)ctx.fillText(lbl,fxS(i),H-5);});
+  }
+
+  // ── NOW separator ──
+  ctx.beginPath();ctx.setLineDash([3,3]);
+  ctx.strokeStyle='rgba(255,255,255,.35)';ctx.lineWidth=1.5;
+  ctx.moveTo(splitX,pad.t-4);ctx.lineTo(splitX,H-pad.b+2);ctx.stroke();
+  ctx.setLineDash([]);
+  // "AGORA" label
+  ctx.fillStyle='rgba(255,255,255,.55)';ctx.font='bold 8px Segoe UI';ctx.textAlign='center';
+  ctx.fillText('AGORA',splitX,pad.t-4);
+
+  // ── Y axis labels ──
+  ctx.fillStyle='#7a9db8';ctx.font='9px Segoe UI';ctx.textAlign='right';
+  const steps=3;
+  for(let s=0;s<=steps;s++){
+    const v=mn+(mx-mn)*(s/steps);
+    ctx.fillText(Math.round(v)+'°',pad.l-4,yS(v)+3);}
+
+  // ── Y grid lines (subtle) ──
+  ctx.strokeStyle='rgba(29,53,80,.5)';ctx.lineWidth=.8;
+  for(let s=0;s<=steps;s++){
+    const v=mn+(mx-mn)*(s/steps),y=yS(v);
+    ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(W-pad.r,y);ctx.stroke();}
+
+  // ── Section labels (top) ──
+  ctx.font='8px Segoe UI';ctx.textAlign='left';
+  ctx.fillStyle='rgba(100,181,246,.7)';
+  ctx.fillText('◂ Últimos 7 dias',pad.l+2,pad.t+9);
+  ctx.fillStyle='rgba(33,150,243,.9)';
+  ctx.fillText('Próximas 24h ▸',splitX+4,pad.t+9);
+}
+
+
+// ── FETCH WEATHER ──────────────────────────────────────────────────────
 async function fetchWeather(){
+  let d;
   try{
+    // URL limpa — sem parâmetros duplicados
     const url=`https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}`
       +`&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,`
       +`wind_speed_10m,wind_direction_10m,wind_gusts_10m,surface_pressure,dew_point_2m`
-      +`&daily=temperature_2m_max,temperature_2m_min,weather_code,sunrise,sunset,precipitation_sum,uv_index_max`
-      +`&hourly=temperature_2m,weather_code,precipitation_probability`
+      +`&hourly=temperature_2m,weather_code,precipitation_probability,wind_direction_10m`
+      +`&daily=temperature_2m_max,temperature_2m_min,weather_code,sunrise,sunset,`
+      +`precipitation_sum,uv_index_max`
       +`&past_days=7&timezone=${TZ}&forecast_days=6`;
-    const d=await(await fetch(url)).json();
-    const c=d.current,dy=d.daily,TODAY=7;
+    d=await(await fetch(url)).json();
+    saveC('wx',d);
+  }catch(e){
+    console.warn('Fetch weather:',e);
+    d=loadC('wx',12*3600000);
+    if(!d){console.error('Sem dados');return;}
+    $('upd-t').textContent='⚠️ Cache';}
 
-    $('temp').textContent=Math.round(c.temperature_2m);rp('temp');
-    $('feels').textContent=Math.round(c.apparent_temperature);
-    const[icon,desc]=wCode(c.weather_code);
-    $('w-icon').textContent=icon;rp('w-icon');$('w-desc').textContent=desc;
-    $('tmax').textContent=Math.round(dy.temperature_2m_max[TODAY])+'°';
-    $('tmin').textContent=Math.round(dy.temperature_2m_min[TODAY])+'°';
-    $('dew').textContent=Math.round(c.dew_point_2m)+'°C';
-    $('dew2').textContent=Math.round(c.dew_point_2m);rp('dew2');
-    const dd=c.temperature_2m-c.dew_point_2m;
-    $('dew-t').textContent=dd<3?'Nevoeiro provável':dd<6?'Humidade alta':'Normal';
-    $('hum-bar').textContent=c.relative_humidity_2m+'%';$('hval').textContent=c.relative_humidity_2m+'%';
-    setArc('harc',c.relative_humidity_2m,c.relative_humidity_2m>80?'#2196f3':c.relative_humidity_2m>50?'#4caf50':'#ff9800');
-    $('wsp').textContent=Math.round(c.wind_speed_10m);rp('wsp');
-    $('wgust').textContent=Math.round(c.wind_gusts_10m);
-    $('wdir').textContent=windFromDir(c.wind_direction_10m);
-    $('wneedle').setAttribute('transform',`rotate(${c.wind_direction_10m},60,60)`);
-    $('pres').textContent=Math.round(c.surface_pressure);rp('pres');
-    const pt=c.surface_pressure>1020?['⬆ Alta pressão','#4caf50']:c.surface_pressure>1013?['➡ Normal','#b0c8df']:['⬇ Baixa pressão','#ff9800'];
-    $('pres-t').textContent=pt[0];$('pres-t').style.color=pt[1];
-    $('rain').textContent=c.precipitation.toFixed(1);rp('rain');
-    $('rain-t').textContent=c.precipitation>0?`${(c.precipitation*2).toFixed(1)} mm/h`:'Sem precipitação';
-    const hum=c.relative_humidity_2m,vis=hum>95?1:hum>85?5:hum>70?10:hum>50?20:40;
-    $('vis').textContent=vis;rp('vis');
-    $('vis-t').textContent=vis>=20?'Excelente':vis>=10?'Boa':vis>=5?'Moderada':'Fraca';
-    const uv=dy.uv_index_max[TODAY];
-    $('uvval').textContent=uv?uv.toFixed(0):'--';
-    if(uv){setArc('uvarc',Math.min(100,(uv/12)*100),uv<=2?'#4caf50':uv<=5?'#ffc107':uv<=7?'#ff9800':uv<=10?'#f44336':'#9c27b0');}
-    updateSolar(dy.sunrise[TODAY],dy.sunset[TODAY]);
-    $('moon').textContent=moonPhase();
+  const c=d.current,dy=d.daily,TODAY=7;
 
-    // Conforto
-    const[cl,cc,cb]=comfortIdx(c.temperature_2m,c.relative_humidity_2m,c.wind_speed_10m);
-    const cbg=$('comf-badge');cbg.textContent=cl;cbg.style.color=cc;cbg.style.background=cb;
-    cbg.style.borderColor=cc+'44';cbg.classList.remove('pulse');
+  // Temperatura
+  $('temp').textContent=Math.round(c.temperature_2m);rp('temp');
+  $('feels').textContent=Math.round(c.apparent_temperature);
+  const[icon,desc]=wCode(c.weather_code);
+  $('w-icon').textContent=icon;rp('w-icon');$('w-desc').textContent=desc;
+  $('tmax').textContent=Math.round(dy.temperature_2m_max[TODAY])+'°';
+  $('tmin').textContent=Math.round(dy.temperature_2m_min[TODAY])+'°';
 
-    // Rain history (últimos 7 dias = índices 0-6)
-    const rl=[],rv=[];
-    for(let i=0;i<7;i++){
-      rv.push(dy.precipitation_sum[i]||0);
-      rl.push(new Date(dy.time[i]).toLocaleDateString('pt-PT',{weekday:'short',timeZone:TZ}).replace('.',''));}
-    drawRain(rl,rv);
+  // Info bar
+  $('dew').textContent=Math.round(c.dew_point_2m)+'°C';
+  $('hum-bar').textContent=c.relative_humidity_2m+'%';
 
-    // Dias sem chuva
-    let dry=0;for(let i=TODAY-1;i>=0;i--){if((dy.precipitation_sum[i]||0)<.1)dry++;else break;}
-    $('dry-days').textContent=dry===0?'Hoje choveu':`${dry} dia${dry>1?'s':''} sem chuva`;
+  // Gauges
+  $('hval').textContent=c.relative_humidity_2m+'%';
+  setArc('harc',c.relative_humidity_2m,
+    c.relative_humidity_2m>80?'#2196f3':c.relative_humidity_2m>50?'#4caf50':'#ff9800');
+  const uv=dy.uv_index_max[TODAY];
+  $('uvval').textContent=uv?uv.toFixed(0):'--';
+  if(uv)setArc('uvarc',Math.min(100,(uv/12)*100),
+    uv<=2?'#4caf50':uv<=5?'#ffc107':uv<=7?'#ff9800':uv<=10?'#f44336':'#9c27b0');
 
-    // Hourly for temp chart
-    const nowH=new Date();tHourly=[];tTimes=[];
-    for(let i=0;i<d.hourly.time.length;i++){
-      const ht=new Date(d.hourly.time[i]);if(ht<nowH)continue;
-      if(tHourly.length>=24)break;
-      tHourly.push(d.hourly.temperature_2m[i]);tTimes.push(fmtT(d.hourly.time[i]));}
-    drawTemp();
+  // Vento
+  $('wsp').textContent=Math.round(c.wind_speed_10m);rp('wsp');
+  $('wgust').textContent=Math.round(c.wind_gusts_10m);
+  $('wdir').textContent=wDir(c.wind_direction_10m);
+  $('wneedle').setAttribute('transform',`rotate(${c.wind_direction_10m},60,60)`);
 
-    // Forecast 5 days (today=TODAY)
-    const fc=$('fdays');fc.innerHTML='';
-    for(let i=TODAY;i<TODAY+5;i++){
-      const[fi]=wCode(dy.weather_code[i]);const rn=dy.precipitation_sum[i];
-      const div=document.createElement('div');div.className='fd'+(i===TODAY?' tod':'');
-      div.innerHTML=`<div class="fdn">${fmtDS(dy.time[i])}</div><div class="fdi">${fi}</div>`+
-        `<div class="fdx">${Math.round(dy.temperature_2m_max[i])}°</div>`+
-        `<div class="fdm">${Math.round(dy.temperature_2m_min[i])}°</div>`+
-        `<div class="fdr">${rn>0?'💧'+rn.toFixed(1)+'mm':''}</div>`;
-      fc.appendChild(div);}
+  // Pressão
+  $('pres').textContent=Math.round(c.surface_pressure);rp('pres');
+  const pt=c.surface_pressure>1020?['⬆ Alta pressão','#4caf50']:
+    c.surface_pressure>1013?['➡ Normal','#b0c8df']:['⬇ Baixa pressão','#ff9800'];
+  $('pres-t').textContent=pt[0];$('pres-t').style.color=pt[1];
 
-    // Hourly scroll
-    const hs=$('hscroll');hs.innerHTML='';let cnt=0;
-    for(let i=0;i<d.hourly.time.length&&cnt<24;i++){
-      const ht=new Date(d.hourly.time[i]);if(ht<nowH)continue;
-      const[hi]=wCode(d.hourly.weather_code[i]);const prob=d.hourly.precipitation_probability[i];
-      const div=document.createElement('div');div.className='hr'+(cnt===0?' now':'');cnt++;
-      div.innerHTML=`<div class="ht">${fmtT(d.hourly.time[i])}</div><div class="hi">${hi}</div>`+
-        `<div class="hv">${Math.round(d.hourly.temperature_2m[i])}°</div>`+
-        `${prob>20?`<div class="hp">💧${prob}%</div>`:''}`;
-      hs.appendChild(div);}
+  // Chuva
+  $('rain').textContent=c.precipitation.toFixed(1);rp('rain');
+  $('rain-t').textContent=c.precipitation>0?`${(c.precipitation*2).toFixed(1)} mm/h`:'Sem precipitação';
 
-    $('upd-time').textContent='Atualizado '+new Date().toLocaleTimeString('pt-PT',{hour:'2-digit',minute:'2-digit',timeZone:TZ});
-    countdown=300;
-  }catch(e){console.error('Weather:',e);}}
+  // Visibilidade
+  const hum=c.relative_humidity_2m,vis=hum>95?1:hum>85?5:hum>70?10:hum>50?20:40;
+  $('vis').textContent=vis;rp('vis');
+  $('vis-t').textContent=vis>=20?'Excelente':vis>=10?'Boa':vis>=5?'Moderada':'Fraca';
 
-// ── FETCH AQI ─────────────────────────────────────────────────────────
+  // Humidade solo — carregado em fetchSoil() separadamente
+  fetchSoil();
+
+  // Solar + moon
+  updateSolar(dy.sunrise[TODAY],dy.sunset[TODAY]);
+  $('moon').textContent=moonPhase();
+
+  // Conforto
+  const[cl,cc,cb]=comfortIdx(c.temperature_2m,c.relative_humidity_2m,c.wind_speed_10m);
+  $('comf').textContent=cl;$('comf').style.color=cc;
+  $('comf').style.background=cb;$('comf').style.borderColor=cc+'44';$('comf').classList.remove('pulse');
+
+  // Chuva 7 dias
+  const rl=[],rv=[];
+  for(let i=0;i<7;i++){rv.push(dy.precipitation_sum[i]||0);
+    rl.push(new Date(dy.time[i]).toLocaleDateString('pt-PT',{weekday:'short',timeZone:TZ}).replace('.',''));}
+  drawRain(rl,rv);
+
+  // Dias sem chuva
+  let dry=0;for(let i=TODAY-1;i>=0;i--){if((dy.precipitation_sum[i]||0)<.1)dry++;else break;}
+  $('dry-d').textContent=dry===0?'Hoje choveu':`${dry} dia${dry>1?'s':''} sem chuva`;
+
+  // Gráfico temperatura: passado 7 dias + próximas 24h
+  const nowH=new Date();
+  windDirs7=[];
+  const p7T=[],p7L=[],fut_t=[],fut_l=[];
+  d.hourly.time.forEach((t,i)=>{
+    const ht=new Date(t);
+    if(ht<nowH){
+      const age=(nowH-ht)/3600000;
+      if(age<=168&&i%4===0){
+        p7T.push(d.hourly.temperature_2m[i]);
+        // Label: day abbreviation (e.g. "seg", "ter") for each point
+        const dayLbl=new Date(t).toLocaleDateString('pt-PT',{weekday:'short',timeZone:TZ}).replace('.','');
+        p7L.push(dayLbl);}
+      if(d.hourly.wind_direction_10m)windDirs7.push(d.hourly.wind_direction_10m[i]);
+    }else if(fut_t.length<24){fut_t.push(d.hourly.temperature_2m[i]);fut_l.push(fmt_t(t));}});
+  _p7T=p7T;_p7L=p7L;_fT=fut_t;_fL=fut_l;
+  drawTemp(p7T,p7L,fut_t,fut_l);
+  drawRose(windDirs7);
+
+  // Previsão 5 dias
+  const fc=$('fdays');fc.innerHTML='';
+  for(let i=TODAY;i<TODAY+5;i++){
+    const[fi]=wCode(dy.weather_code[i]);const rn=dy.precipitation_sum[i];
+    const div=document.createElement('div');div.className='fd'+(i===TODAY?' tod':'');
+    div.innerHTML=`<div class="fdn">${fmt_ds(dy.time[i])}</div><div class="fdi">${fi}</div>`
+      +`<div class="fdx">${Math.round(dy.temperature_2m_max[i])}°</div>`
+      +`<div class="fdm">${Math.round(dy.temperature_2m_min[i])}°</div>`
+      +`<div class="fdr">${rn>0?'💧'+rn.toFixed(1)+'mm':''}</div>`;
+    fc.appendChild(div);}
+
+  // Scroll 24h
+  const hs=$('hs');hs.innerHTML='';let cnt=0;
+  d.hourly.time.forEach((t,i)=>{
+    if(new Date(t)<nowH||cnt>=24)return;
+    const[hi]=wCode(d.hourly.weather_code[i]);const prob=d.hourly.precipitation_probability[i];
+    const div=document.createElement('div');div.className='hr'+(cnt===0?' now':'');cnt++;
+    div.innerHTML=`<div class="ht">${fmt_t(t)}</div><div class="hi">${hi}</div>`
+      +`<div class="hv">${Math.round(d.hourly.temperature_2m[i])}°</div>`
+      +(prob>20?`<div class="hp">💧${prob}%</div>`:'');
+    hs.appendChild(div);});
+
+  $('upd-t').textContent='Atualizado '+new Date().toLocaleTimeString('pt-PT',{hour:'2-digit',minute:'2-digit',timeZone:TZ});
+  countdown=300;}
+
+// ── FETCH SOIL MOISTURE ──────────────────────────────────────────────────
+async function fetchSoil(){
+  try{
+    const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}`
+      +`&daily=soil_moisture_0_to_7cm,et0_fao_evapotranspiration&timezone=${TZ}&forecast_days=1`);
+    if(!r.ok)return;
+    const d=await r.json();
+    const sm=d.daily?.soil_moisture_0_to_7cm?.[0]??null;
+    const et0=d.daily?.et0_fao_evapotranspiration?.[0]??null;
+    if(sm!==null){
+      const smP=Math.round(Math.min(100,sm*100/0.5));
+      const smC=smP>60?'#2196f3':smP>30?'#4caf50':'#ff9800';
+      $('soil-v').textContent=smP;rp('soil-v');
+      $('soil-f').style.width=smP+'%';$('soil-f').style.background=smC;}
+    if(et0!==null)$('et0-v').textContent=`ET₀: ${et0.toFixed(1)} mm/dia`;
+  }catch(e){console.warn('Soil:',e);}}
+
+// ── FETCH AQI ──────────────────────────────────────────────────────────
 async function fetchAQ(){
   try{
     const d=await(await fetch(
@@ -817,60 +939,255 @@ async function fetchAQ(){
     )).json();
     const aqi=Math.round(d.current.european_aqi);
     const[desc,col,adv]=aqiInfo(aqi);
-    $('aqi-num').textContent=aqi;$('aqi-num').style.color=col;rp('aqi-num');
-    $('aqi-desc').textContent=desc;$('aqi-desc').style.color=col;rp('aqi-desc');
-    $('aqi-advice').textContent=adv;$('aqi-advice').style.color=col+'cc';
-    $('aqi-mk').style.left=Math.min(94,(aqi/100)*94)+'%';
-  }catch(e){console.error('AQ:',e);}}
+    $('aqi-n').textContent=aqi;$('aqi-n').style.color=col;rp('aqi-n');
+    $('aqi-d').textContent=desc;$('aqi-d').style.color=col;rp('aqi-d');
+    $('aqi-a').textContent=adv;$('aqi-a').style.color=col+'cc';
+    $('aqi-m').style.left=Math.min(94,(aqi/100)*94)+'%';
+  }catch(e){console.warn('AQ:',e);}}
 
-// ── IPMA ALERTAS ──────────────────────────────────────────────────────
+// ── ALERTAS IPMA ────────────────────────────────────────────────────────
+let alertsActive=[];
 async function fetchAlerts(){
   try{
     const r=await fetch('https://api.ipma.pt/open-data/forecast/warnings/warnings_www.json');
     if(!r.ok)return;
     const alerts=await r.json(),now=new Date();
+    saveC('alerts',alerts);
     const CODES=['CLT','BIN'];
-    const active=alerts.filter(a=>{
+    alertsActive=alerts.filter(a=>{
       if(!CODES.some(c=>a.idAreaAviso?.startsWith(c)))return false;
       try{return now>=new Date(a.startTime)&&now<=new Date(a.endTime)&&
         !['green','1 Verde'].includes(a.awarenessLevelID??a.awarenessLevel);}catch{return false;}});
-    if(!active.length){$('alert-bar').classList.remove('on');return;}
-    const sev={'2 Amarelo':1,'yellow':1,'3 Laranja':2,'orange':2,'4 Vermelho':3,'red':3};
-    active.sort((a,b)=>(sev[b.awarenessLevelID??b.awarenessLevel]||0)-(sev[a.awarenessLevelID??a.awarenessLevel]||0));
-    const top=active[0],lv=top.awarenessLevelID??top.awarenessLevel;
-    const col={'2 Amarelo':'#ffc107','yellow':'#ffc107','3 Laranja':'#ff9800','orange':'#ff9800','4 Vermelho':'#f44336','red':'#f44336'}[lv]||'#ffc107';
-    const bg={'2 Amarelo':'#1f1700','yellow':'#1f1700','3 Laranja':'#1f0d00','orange':'#1f0d00','4 Vermelho':'#1f0505','red':'#1f0505'}[lv]||'#1f1700';
-    const icons={Precipitação:'🌧',Vento:'💨',Trovoada:'⛈',Neve:'❄️',Calor:'🌡',Frio:'🥶',Nevoeiro:'🌫'};
-    const bar=$('alert-bar');bar.style.background=bg;bar.style.borderBottomColor=col+'55';bar.style.color=col;
-    $('al-icon').textContent=icons[top.awarenessTypeName]||'⚠️';
-    $('al-text').textContent=`Aviso IPMA — ${top.awarenessTypeName||'Fenómeno'} — ${top.idAreaAviso}${active.length>1?' (+'+(active.length-1)+')':''}`;
-    try{$('al-time').textContent='Até '+new Date(top.endTime).toLocaleString('pt-PT',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'2-digit',timeZone:TZ});}catch{}
-    bar.classList.add('on');
-  }catch(e){console.warn('Alerts:',e);}}
+    renderAlerts();
+  }catch(e){const cache=loadC('alerts',3600000);if(cache)alertsActive=cache;renderAlerts();}}
 
-// ── LIGHTNING ─────────────────────────────────────────────────────────
+function renderAlerts(){
+  if(!alertsActive.length){$('alert-bar').classList.remove('on');return;}
+  const sev={'2 Amarelo':1,'yellow':1,'3 Laranja':2,'orange':2,'4 Vermelho':3,'red':3};
+  alertsActive.sort((a,b)=>(sev[b.awarenessLevelID??b.awarenessLevel]||0)-(sev[a.awarenessLevelID??a.awarenessLevel]||0));
+  const top=alertsActive[0],lv=top.awarenessLevelID??top.awarenessLevel;
+  const col={'2 Amarelo':'#ffc107','yellow':'#ffc107','3 Laranja':'#ff9800','orange':'#ff9800','4 Vermelho':'#f44336','red':'#f44336'}[lv]||'#ffc107';
+  const bg={'2 Amarelo':'#1f1700','yellow':'#1f1700','3 Laranja':'#1f0d00','orange':'#1f0d00','4 Vermelho':'#1f0505','red':'#1f0505'}[lv]||'#1f1700';
+  const icons={Precipitação:'🌧',Vento:'💨',Trovoada:'⛈',Neve:'❄️',Calor:'🌡',Frio:'🥶',Nevoeiro:'🌫','Agitação Marítima':'🌊'};
+  const bar=$('alert-bar');bar.style.background=bg;bar.style.borderBottomColor=col+'55';bar.style.color=col;
+  $('al-i').textContent=icons[top.awarenessTypeName]||'⚠️';
+  $('al-t').textContent=`Aviso IPMA — ${top.awarenessTypeName||'Fenómeno'} — ${top.idAreaAviso}${alertsActive.length>1?' (+'+(alertsActive.length-1)+')':''}`;
+  try{$('al-time').textContent='Até '+new Date(top.endTime).toLocaleString('pt-PT',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'2-digit',timeZone:TZ});}catch{}
+  const texts=alertsActive.map(a=>a.text||a.awarenessTypeName||'').filter(Boolean);
+  $('al-title').textContent=`${top.awarenessTypeName||''} — ${top.idAreaAviso}`;
+  $('al-desc').textContent=texts.join(' | ')||'Sem descrição adicional.';
+  bar.classList.add('on');
+  if(['3 Laranja','orange','4 Vermelho','red'].includes(lv)){
+    $('notif-badge').classList.add('on');
+    if(Notification.permission==='granted')
+      new Notification('⚠️ Aviso IPMA '+top.idAreaAviso,{body:top.text||top.awarenessTypeName});
+  }else $('notif-badge').classList.remove('on');}
+
+function toggleDetail(){$('alert-detail').classList.toggle('on');$('al-arr').textContent=$('alert-detail').classList.contains('on')?'▲':'▼';}
+
+// ── ESTAÇÕES IPMA ────────────────────────────────────────────────────
+async function fetchStations(){
+  try{
+    const r=await fetch('https://api.ipma.pt/open-data/observation/meteorology/stations/obs-surface.geojson');
+    if(!r.ok)return;
+    const obs=await r.json();
+    const bar=$('stn-bar');bar.innerHTML='';let count=0;
+    (obs.features||[]).forEach(f=>{
+      const[lon,lat]=f.geometry?.coordinates||[];
+      if(!lat||lat<39.2||lat>40.1||lon<-9.5||lon>-8.0)return;
+      const p=f.properties||{};
+      const temp=p.temperatura??p.temp??null;
+      if(temp===null||temp===-99)return;
+      const span=document.createElement('span');span.className='stn';
+      const name=p.localEstacao||p.local||'Estação';
+      span.innerHTML=`<span class="stn-n">${name}</span><span class="stn-v">${temp}°C</span>`;
+      if(p.humidade&&p.humidade!==-99)span.innerHTML+=`<span class="stn-v"> ${p.humidade}%</span>`;
+      bar.appendChild(span);count++;});
+    if(count>0)bar.classList.add('on');
+  }catch(e){console.warn('Stations:',e);}}
+
+// ── INCÊNDIOS ACTIVOS ────────────────────────────────────────────────
+async function fetchFires(){
+  const LON_MIN=-9.0678,LON_MAX=-8.5849,LAT_MIN=39.6069,LAT_MAX=39.9790;
+  const PW=300,PH=260,PP=8;
+  function proj(lon,lat){
+    return[(lon-LON_MIN)/(LON_MAX-LON_MIN)*(PW-2*PP)+PP,
+           (1-(lat-LAT_MIN)/(LAT_MAX-LAT_MIN))*(PH-2*PP)+PP];}
+  try{
+    const r=await fetch('https://api.fogos.pt/v2/incidents/active?after=1&before=0');
+    if(!r.ok)return;
+    const data=await r.json();
+    const layer=$('fires-g');if(!layer)return;layer.innerHTML='';
+    (data.data||[]).forEach(inc=>{
+      const lat=parseFloat(inc.lat||inc.latitude),lon=parseFloat(inc.lng||inc.longitude);
+      if(!lat||!lon||lat<39.2||lat>40.1||lon<-9.5||lon>-8.0)return;
+      const[sx,sy]=proj(lon,lat);
+      const ci=document.createElementNS('http://www.w3.org/2000/svg','circle');
+      ci.setAttribute('cx',sx.toFixed(1));ci.setAttribute('cy',sy.toFixed(1));
+      ci.setAttribute('r','5');ci.setAttribute('class','fdot');
+      ci.setAttribute('data-name',inc.location||inc.concelho||'Incêndio');
+      ci.addEventListener('mousemove',e=>{
+        mttN.textContent='🔥 '+ci.getAttribute('data-name');
+        mttR.textContent='Incêndio activo';mttR.style.color='#ef4444';mttF.textContent='';
+        const cb=$('map-cnt').getBoundingClientRect();
+        mtt.style.left=(e.clientX-cb.left+12)+'px';mtt.style.top=(e.clientY-cb.top+12)+'px';
+        mtt.style.display='block';});
+      ci.addEventListener('mouseleave',()=>mtt.style.display='none');
+      layer.appendChild(ci);});
+  }catch(e){console.warn('Fires:',e);}}
+
+// ── RISCO INCÊNDIO ───────────────────────────────────────────────────
+async function fetchFire(){
+  let allRCM={},allD1={},source='--';
+
+  // 1) IPMA API (hoje + amanhã em paralelo)
+  try{
+    const ctrl=new AbortController();setTimeout(()=>ctrl.abort(),8000);
+    const[r0,r1]=await Promise.all([
+      fetch('https://api.ipma.pt/open-data/forecast/meteorology/rcm/rcm-d0.json',{signal:ctrl.signal}),
+      fetch('https://api.ipma.pt/open-data/forecast/meteorology/rcm/rcm-d1.json',{signal:ctrl.signal})]);
+    if(r0.ok){
+      const d=await r0.json();const loc=d?.local??{};const dp=d?.dataPrev??'';
+      let n=0;
+      Object.entries(DICO).forEach(([dico,slug])=>{
+        const rcm=loc[dico]?.data?.rcm??null;
+        if(rcm!==null){allRCM[slug]=rcm;n++;}});
+      if(n>0){source='IPMA+ICNF'+(dp?' · '+dp:'');saveC('rcm0',{allRCM,source});}}
+    if(r1.ok){
+      const d=await r1.json();const loc=d?.local??{};
+      Object.entries(DICO).forEach(([dico,slug])=>{
+        const rcm=loc[dico]?.data?.rcm??null;
+        if(rcm!==null)allD1[slug]=rcm;});
+      saveC('rcm1',allD1);}
+  }catch(e){console.warn('IPMA:',e.message);}
+
+  // 2) Cache IPMA
+  if(!allRCM.leiria){
+    const cache=loadC('rcm0',6*3600000);
+    if(cache){allRCM=cache.allRCM;source=cache.source+' (cache)';}}
+  const d1cache=loadC('rcm1',6*3600000);
+  if(!Object.keys(allD1).length&&d1cache)allD1=d1cache;
+
+  // 3) ICNF scraping
+  if(!allRCM.leiria){
+    const BASE='https://fogos.icnf.pt/rif/Stat_Global_Sensibilizacao_Riscolist.asp';
+    const tasks=Object.entries(DICO_N).map(async([dico,name])=>{
+      const slug=DICO[dico];
+      try{
+        const ctrl=new AbortController();setTimeout(()=>ctrl.abort(),8000);
+        const url=`${BASE}?cmd=search&t=Stat_Global_Sensibilizacao_Risco&z_Distrito=LIKE&x_Distrito=Leiria&z_Concelho=LIKE&x_Concelho=${encodeURIComponent(name)}`;
+        const r=await fetch(url,{signal:ctrl.signal});if(!r.ok)return;
+        const html=await r.text();let rcm=null;
+        if(/MUITO ELEVADO/i.test(html))rcm=4;else if(/M[ÁA]XIMO/i.test(html))rcm=5;
+        else if(/ELEVADO/i.test(html))rcm=3;else if(/MODERADO/i.test(html))rcm=2;
+        else if(/REDUZIDO/i.test(html))rcm=1;
+        if(rcm!==null)allRCM[slug]=rcm;
+      }catch{}});
+    await Promise.allSettled(tasks);
+    if(allRCM.leiria){source='ICNF (fogos.icnf.pt)';saveC('rcm0',{allRCM,source});}}
+
+  // 4) Fallback meteorológico
+  if(!allRCM.leiria){
+    try{
+      const wx=await(await fetch(
+        `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}`
+        +`&current=temperature_2m,relative_humidity_2m,wind_speed_10m`
+        +`&daily=precipitation_sum&past_days=7&timezone=${TZ}&forecast_days=1`
+      )).json();
+      const T=wx.current.temperature_2m,H=wx.current.relative_humidity_2m,W=wx.current.wind_speed_10m;
+      const r7=(wx.daily?.precipitation_sum||[]).slice(0,7).reduce((a,b)=>a+(b||0),0);
+      let b;
+      if(T<12||H>85||(H>70&&r7>15))b=1;
+      else if((T<20&&H>60)||r7>10)b=2;else if(T<26&&H>45)b=2;
+      else if(T<30&&H>35)b=3;else if(T<35&&H>20&&W<30)b=3;
+      else if(T<38&&H>15&&W<40)b=4;else b=5;
+      if(r7>30&&b>1)b--;else if(r7>15&&b>2)b--;
+      const OFF={alcobaca:-1,alvaiazere:1,ansiao:2,batalha:0,bombarral:-2,caldas:-1,
+        castanheira:3,figueiro:3,leiria:0,marinha:-1,nazare:-1,obidos:-2,
+        pedrogao:4,peniche:-2,pombal:2,portodemos:1};
+      Object.entries(OFF).forEach(([slug,off])=>allRCM[slug]=Math.max(1,Math.min(5,b+off)));
+      source='Estimativa meteorológica';
+    }catch(e){console.warn('Fallback:',e);}}
+
+  // Aplicar a todos
+  Object.entries(DICO).forEach(([,slug])=>applyMun(slug,allRCM[slug]??null));
+
+  const munRCM=allRCM.leiria??null;
+  const vals=Object.values(allRCM).filter(v=>v>0);
+  const distRCM=vals.length?(vals.slice().sort((a,b)=>a-b)[Math.floor(vals.length*.8)]??vals[vals.length-1]):null;
+  const munD1=allD1.leiria??null;
+  const vD1=Object.values(allD1).filter(v=>v>0);
+  const distD1=vD1.length?(vD1.slice().sort((a,b)=>a-b)[Math.floor(vD1.length*.8)]??vD1[vD1.length-1]):null;
+
+  applyBadge('fbdg-m','fd1-m','fdsc-m','fb-mun','fsrc-d-m','fsrc-t-m',munRCM,munD1,source);
+  applyBadge('fbdg-d','fd1-d','fdsc-d','fb-dist','fsrc-d-d','fsrc-t-d',distRCM,distD1,source);}
+
 function updateLightning(){
   const h=new Date().getHours(),storm=h>=14&&h<=20;
   $('l30').textContent=storm?Math.floor(Math.random()*6):0;
   $('l60').textContent=storm?Math.floor(Math.random()*12):0;
   $('l90').textContent=storm?Math.floor(Math.random()*18):0;}
 
-// ── FULLSCREEN ────────────────────────────────────────────────────────
+// KIOSK
+const KC=['c-temp','c-fore','c-wind','c-pres','c-fire','c-aqi'];
+function toggleKiosk(){
+  const b=document.body;
+  if(b.classList.contains('kiosk')){
+    b.classList.remove('kiosk');clearInterval(kioskTimer);kioskTimer=null;
+    KC.forEach(id=>$(id).classList.remove('kiosk-on'));
+    $('kiosk-btn').classList.remove('on');$('kiosk-btn').textContent='📺 Quiosque';
+  }else{
+    b.classList.add('kiosk');$('kiosk-btn').classList.add('on');$('kiosk-btn').textContent='✕ Quiosque';
+    kioskIdx=0;showKCard();
+    kioskTimer=setInterval(()=>{kioskIdx=(kioskIdx+1)%KC.length;showKCard();},8000);}}
+function showKCard(){
+  KC.forEach((id,i)=>{$(id).classList.toggle('kiosk-on',i===kioskIdx);
+    $('kd-'+i).classList.toggle('on',i===kioskIdx);});
+  setTimeout(()=>{drawTemp(_p7T,_p7L,_fT,_fL);drawRose(windDirs7);},100);}
+
+// QR
+function showQR(){
+  $('qr-modal').classList.add('on');
+  const url=window.location.href;$('qr-url').textContent=url;
+  const canvas=$('qr-canvas'),ctx=canvas.getContext('2d'),W=160,H=160;
+  ctx.fillStyle='#fff';ctx.fillRect(0,0,W,H);
+  ctx.fillStyle='#1a1a2e';ctx.font='9px monospace';ctx.textAlign='center';
+  ctx.fillText('URL do dashboard:',W/2,18);
+  const lines=[];let line='';
+  url.split('').forEach(ch=>{line+=ch;if(line.length>22){lines.push(line);line='';}});
+  if(line)lines.push(line);
+  lines.slice(0,5).forEach((l,i)=>ctx.fillText(l,W/2,34+i*13));
+  // finder patterns
+  ctx.fillStyle='#1a1a2e';
+  [[8,120],[120,120],[8,8]].forEach(([x,y])=>{
+    ctx.fillRect(x,y,24,24);ctx.fillStyle='#fff';ctx.fillRect(x+3,y+3,18,18);
+    ctx.fillStyle='#1a1a2e';ctx.fillRect(x+7,y+7,10,10);ctx.fillStyle='#1a1a2e';});}
+function hideQR(){$('qr-modal').classList.remove('on');}
+$('qr-modal').addEventListener('click',e=>{if(e.target===$('qr-modal'))hideQR();});
+
+// Notificações
+function reqNotif(){
+  if(!('Notification' in window)){alert('Browser não suporta notificações.');return;}
+  Notification.requestPermission().then(p=>{
+    if(p==='granted'){$('notif-btn').textContent='🔔✓';$('notif-btn').classList.add('on');}
+    else{$('notif-btn').textContent='🔔✗';}});}
+
 function toggleFS(){
   if(!document.fullscreenElement)
-    document.documentElement.requestFullscreen().then(()=>{$('fs-btn').classList.add('on');$('fs-btn').textContent='✕ Sair fullscreen';});
+    document.documentElement.requestFullscreen().then(()=>{$('fs-btn').classList.add('on');$('fs-btn').textContent='✕ Sair';});
   else document.exitFullscreen().then(()=>{$('fs-btn').classList.remove('on');$('fs-btn').textContent='⛶ Ecrã inteiro';});}
-document.addEventListener('fullscreenchange',()=>setTimeout(()=>{drawTemp();},200));
-window.addEventListener('resize',()=>setTimeout(drawTemp,100));
+document.addEventListener('fullscreenchange',()=>setTimeout(()=>{drawTemp(_p7T,_p7L,_fT,_fL);drawRose(windDirs7);},200));
+window.addEventListener('resize',()=>setTimeout(()=>{drawTemp(_p7T,_p7L,_fT,_fL);drawRose(windDirs7);},100));
 
-// ── INIT ──────────────────────────────────────────────────────────────
-function refreshAll(){fetchWeather();fetchAQ();fetchFire();updateLightning();fetchAlerts();}
+function refreshAll(){fetchWeather();fetchSoil();fetchAQ();fetchFire();updateLightning();fetchAlerts();fetchStations();fetchFires();}
 refreshAll();
 setInterval(tickClock,1000);tickClock();
 setInterval(updateLightning,60000);
 setInterval(fetchAQ,10*60000);
 setInterval(fetchFire,15*60000);
 setInterval(fetchAlerts,15*60000);
+setInterval(fetchStations,30*60000);
+setInterval(fetchFires,5*60000);
 </script>
 </body>
 </html>
