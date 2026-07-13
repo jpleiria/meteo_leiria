@@ -522,14 +522,12 @@ body.kiosk #kiosk-bar{display:flex}
         <div class="fsc">Município · Hoje</div>
         <div class="fbdg pulse" id="fbdg-m">A carregar</div>
         <div class="fd1"><span>Amanhã: </span><span class="fd1b" id="fd1-m">--</span></div>
-        <div class="fdsc" id="fdsc-m">--</div>
         <div class="fsrc"><div class="fsrc-d" id="fsrc-d-m"></div><span id="fsrc-t-m">--</span></div>
       </div>
       <div class="fb" id="fb-dist">
         <div class="fsc">Distrito · Hoje</div>
         <div class="fbdg pulse" id="fbdg-d">A carregar</div>
         <div class="fd1"><span>Amanhã: </span><span class="fd1b" id="fd1-d">--</span></div>
-        <div class="fdsc" id="fdsc-d">--</div>
         <div class="fsrc"><div class="fsrc-d" id="fsrc-d-d"></div><span id="fsrc-t-d">--</span></div>
       </div>
       <div id="mun-list">
@@ -650,7 +648,6 @@ function applyBadge(bdgId,d1Id,dscId,blkId,fsrcDId,fsrcTId,rcm,rcmD1,src){
   const lv=rcmLv(rcm);
   $(bdgId).textContent='🔥 '+(rcm?lv.label:'A carregar...');
   $(bdgId).style.color=lv.color;$(bdgId).style.background=lv.bg;$(bdgId).classList.remove('pulse');
-  $(dscId).textContent=lv.desc;$(dscId).style.color=lv.color;
   $(blkId).style.borderColor=lv.color+'66';
   if(d1Id){const lv1=rcmLv(rcmD1);$(d1Id).textContent=rcmD1?lv1.label:'--';$(d1Id).style.color=rcmD1?lv1.color:'#607d8b';}
   const si=srcInfo(src);
