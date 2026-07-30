@@ -15,13 +15,19 @@ body{display:flex;flex-direction:column}
 #app{flex:1;display:flex;flex-direction:column;min-height:0}
 
 /* HEADER */
-#hdr{background:var(--bg2);border-bottom:1px solid var(--border);height:54px;
+#hdr{background:var(--bg2);border-bottom:1px solid var(--border);height:64px;
   padding:0 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;gap:10px}
 .logo{width:34px;height:34px;background:linear-gradient(135deg,#1565c0,#42a5f5);
   border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;margin-right:8px}
+.brand-emblems{display:flex;align-items:center;gap:4px;margin-right:8px}
+.brand-emblems img{width:30px;height:34px;object-fit:contain;background:transparent;
+  border:none;padding:0}
 .st{font-size:1.1rem;font-weight:700;color:#fff}.ss{font-size:.74rem;color:var(--text3)}
 #clock{font-size:1.7rem;font-weight:300;color:#fff;letter-spacing:3px;font-variant-numeric:tabular-nums;text-align:center}
 #cdate{font-size:.72rem;color:var(--text3);text-align:center}
+#weather-summary{font-size:.61rem;line-height:1.15;color:var(--text2);text-align:center;
+  white-space:nowrap;margin-top:1px}
+#hdr>div:nth-child(2){flex:1;min-width:0}
 .hbtn{background:var(--bg3);border:1px solid var(--border2);color:var(--text2);
   padding:5px 10px;border-radius:6px;font-size:.75rem;cursor:pointer;transition:all .2s;white-space:nowrap}
 .hbtn:hover,.hbtn.on{background:var(--accent);color:#fff;border-color:var(--accent)}
@@ -133,8 +139,10 @@ body.kiosk #kiosk-bar{display:flex}
 .wfr{font-size:.8rem;color:var(--text2);text-align:center;margin-top:3px;font-weight:500}
 .wgu{font-size:.74rem;color:var(--text3);text-align:center;margin-top:2px}
 .wgu b{color:var(--text2)}
-#wr-wrap{flex:1;display:flex;align-items:center;justify-content:center;min-height:0;margin-top:4px}
-#wr{width:100%;height:100%;max-height:100px}
+#wr-wrap{flex:1;display:flex;flex-direction:column;min-height:0;margin-top:18px}
+.wind-history-title{font-size:.62rem;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;
+  font-weight:600;margin:0 0 2px 2px}
+#wr{width:100%;flex:1;min-height:74px;max-height:108px}
 
 /* MÉTRICAS */
 #c-pres{grid-column:2;grid-row:2;display:grid;grid-template-columns:1fr 1fr;gap:6px}
@@ -153,12 +161,14 @@ body.kiosk #kiosk-bar{display:flex}
 #map-s{flex:1;min-width:0;display:flex;flex-direction:column}
 .mpt{font-size:.65rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;
   font-weight:600;margin-bottom:3px;flex-shrink:0}
-#map-cnt{flex:1;min-height:0;position:relative;overflow:hidden;border-radius:6px}
+#map-cnt{flex:1 1 240px;min-height:175px;position:relative;overflow:hidden;border-radius:6px}
 #dmap{width:100%;height:100%}
 .mleg-row{display:flex;gap:4px;flex-wrap:wrap;margin-top:3px;flex-shrink:0}
 .mleg{display:flex;align-items:center;gap:3px;font-size:.57rem;color:var(--text3)}
 .mleg-d{width:7px;height:7px;border-radius:50%;flex-shrink:0}
-#fire-sb{width:124px;flex-shrink:0;display:flex;flex-direction:column;gap:5px}
+.fire-risk-row{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:auto;padding-top:10px;flex-shrink:0}
+.fire-risk-row .fb{padding:5px}
+#fire-sb{width:170px;flex-shrink:0;display:flex;flex-direction:column;gap:5px}
 .fb{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);
   display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px 5px;text-align:center}
 .fsc{font-size:.59rem;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;font-weight:600;margin-bottom:2px}
@@ -245,7 +255,7 @@ body.kiosk #kiosk-bar{display:flex}
 @media (max-width:1180px){
   #grid{grid-template-columns:1.6fr 1fr 1.4fr;gap:6px;padding:6px}
   .cmp{width:92px;height:92px}
-  #fire-sb{width:106px}
+  #fire-sb{width:145px}
   #temp{font-size:4rem}
   #w-icon{font-size:2.8rem}
 }
@@ -339,10 +349,14 @@ body.kiosk #kiosk-bar{display:flex}
 
 <div id="hdr">
   <div style="display:flex;align-items:center">
+    <div class="brand-emblems" aria-label="Entidades parceiras">
+      <img src="../../Trânsito em tempo real/--»» limite concelho local/leiria.png" alt="Câmara Municipal de Leiria" title="Câmara Municipal de Leiria">
+      <img src="../../Trânsito em tempo real/--»» limite concelho local/logo.png" alt="Bombeiros Sapadores de Leiria" title="Bombeiros Sapadores de Leiria">
+    </div>
     <div class="logo">🌤</div>
     <div><div class="st">MeteoLeiria</div><div class="ss">Dashboard · Leiria</div></div>
   </div>
-  <div><div id="clock">--:--:--</div><div id="cdate">--</div></div>
+  <div><div id="clock">--:--:--</div><div id="cdate">--</div><div id="weather-summary">A carregar condições meteorológicas…</div></div>
   <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap">
     <span><span id="upd-dot"></span><span id="upd-t">A carregar...</span></span>
     <button class="hbtn" onclick="refreshAll()">↺</button>
@@ -429,16 +443,17 @@ body.kiosk #kiosk-bar{display:flex}
       <text x="60" y="118" text-anchor="middle" fill="#6a90a8" font-size="10">S</text>
       <text x="7" y="64" text-anchor="middle" fill="#6a90a8" font-size="10">O</text>
       <g id="wneedle" transform="rotate(0,60,60)">
-        <polygon points="60,14 55,60 60,52 65,60" fill="#2196f3" opacity="0.9"/>
-        <polygon points="60,106 55,60 60,68 65,60" fill="#1d3550"/>
-        <text x="60" y="30" text-anchor="middle" fill="#90caf9" font-size="6" font-weight="700">DE</text>
+        <line x1="60" y1="19" x2="60" y2="82" stroke="#2196f3" stroke-width="4" stroke-linecap="round"/>
+        <polygon points="60,101 51,80 60,86 69,80" fill="#2196f3"/>
       </g>
-      <circle cx="60" cy="60" r="5" fill="#0a1520" stroke="#2196f3" stroke-width="2"/>
+      <circle cx="60" cy="60" r="14" fill="#0a1520" stroke="#2196f3" stroke-width="1.5"/>
+      <text x="60" y="58" text-anchor="middle" fill="#90caf9" font-size="6" font-weight="700">VEM</text>
+      <text x="60" y="66" text-anchor="middle" fill="#90caf9" font-size="6" font-weight="700">DE</text>
     </svg>
   </div>
   <div class="wsp pulse" id="wsp">--</div>
   <div class="wun">km/h</div>
-  <div class="wfr">Vento de <b id="wdir" style="color:var(--accent2)">--</b></div>
+  <div class="wfr">Vento vem de <b id="wdir" style="color:var(--accent2)">--</b></div>
   <div class="wgu">Rajada: <b id="wgust">--</b> km/h</div>
   <div class="gauges">
     <div class="gw">
@@ -460,7 +475,10 @@ body.kiosk #kiosk-bar{display:flex}
       <div class="gl">☀️ UV</div>
     </div>
   </div>
-  <div id="wr-wrap"><canvas id="wr"></canvas></div>
+  <div id="wr-wrap">
+    <div class="wind-history-title">Histórico recente · velocidade (km/h)</div>
+    <canvas id="wr" aria-label="Histórico recente da velocidade do vento"></canvas>
+  </div>
 </div>
 
 <!-- MÉTRICAS -->
@@ -494,17 +512,13 @@ body.kiosk #kiosk-bar{display:flex}
   <div class="ct">🔥 Risco de Incêndio · Distrito de Leiria</div>
   <div class="fbody">
     <div id="map-s">
-      <div class="mpt">🗺 Concelho de Leiria (CAOP real)</div>
+      <div class="mpt">🗺 Limite oficial do concelho de Leiria</div>
       <div id="map-cnt">
         <div id="mtt"><div id="mtt-n"></div><div id="mtt-r"></div><div id="mtt-f"></div></div>
         <svg id="dmap" viewBox="0 0 300 260" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
-          <rect width="300" height="260" fill="#060e18" rx="4"/>
           <path id="mp-l" class="mun-l" data-name="Leiria" data-rcm=""
             d="M87.65,27.68 L101.01,31.98 L111.02,35.54 L140.11,46.25 L154.96,52.3 L159.66,53.85 L162.96,55.65 L166.37,58.02 L171.11,60.03 L174.79,64.93 L176.14,68.67 L177.14,72.65 L177.68,75.81 L179.88,81.09 L190.84,91.32 L194.56,99.23 L199.87,102.17 L204.35,104.5 L208.9,104.45 L212.83,102.14 L217.28,102.2 L222.66,102.51 L226.76,105.23 L232.92,108.33 L236.0,110.01 L239.82,111.9 L243.36,113.32 L250.35,116.99 L255.59,119.91 L258.93,122.14 L264.89,126.56 L265.14,132.06 L259.59,132.13 L256.62,133.62 L254.33,135.07 L250.24,136.09 L248.33,137.31 L244.87,138.14 L243.85,138.89 L242.05,139.71 L238.41,140.59 L236.15,141.27 L233.76,141.93 L232.27,141.91 L230.61,142.44 L230.28,143.13 L229.64,144.12 L229.11,144.76 L228.28,145.38 L228.17,146.8 L228.34,147.63 L228.48,148.77 L228.37,149.8 L228.78,151.15 L228.46,152.08 L228.17,152.68 L228.21,153.47 L228.12,153.91 L228.21,154.7 L228.22,155.53 L228.24,156.09 L227.92,156.84 L227.62,157.4 L227.44,157.94 L227.11,159.06 L227.75,160.18 L228.43,160.62 L228.46,161.73 L228.98,162.73 L229.32,164.07 L229.7,166.13 L232.12,167.9 L233.05,171.07 L235.15,172.72 L238.21,174.02 L236.55,175.48 L233.15,175.5 L229.37,176.92 L227.76,179.09 L228.43,182.1 L229.06,185.17 L230.47,184.59 L232.15,184.52 L234.35,185.76 L236.18,185.65 L238.22,186.5 L240.17,187.24 L241.79,187.87 L244.05,189.06 L246.21,188.89 L248.21,189.19 L250.09,189.79 L251.78,189.91 L253.96,190.1 L255.41,190.94 L256.95,191.98 L259.8,194.28 L258.31,196.0 L256.0,199.06 L253.76,199.66 L252.74,202.26 L251.18,204.73 L252.88,206.95 L252.21,210.31 L249.79,213.6 L250.23,214.87 L248.75,216.34 L247.05,217.42 L245.46,217.91 L243.41,218.3 L241.46,218.89 L239.65,219.78 L237.36,220.97 L235.0,222.04 L232.75,222.87 L230.57,223.26 L229.94,225.54 L228.24,226.45 L226.23,226.58 L224.27,227.58 L221.57,228.57 L219.39,228.95 L216.47,230.07 L214.69,229.57 L213.55,230.36 L213.28,231.61 L210.81,227.9 L195.43,211.4 L183.41,208.85 L180.81,207.15 L176.04,205.07 L158.86,209.07 L148.12,207.04 L144.96,206.06 L141.97,202.6 L140.43,199.72 L138.2,196.82 L138.32,194.66 L136.42,194.05 L135.14,194.05 L134.26,194.36 L133.04,194.8 L130.24,195.05 L128.43,194.59 L125.87,194.44 L124.66,195.98 L123.8,196.76 L121.77,199.17 L119.77,199.87 L118.38,200.99 L115.89,202.27 L113.42,202.96 L111.22,204.14 L109.5,204.65 L108.37,205.68 L106.14,205.78 L104.49,206.55 L102.71,208.45 L100.7,210.63 L100.59,219.38 L98.25,222.56 L97.01,223.26 L95.18,223.42 L94.51,223.49 L93.57,224.31 L93.47,224.49 L91.25,224.79 L90.29,224.66 L89.61,224.57 L88.67,224.55 L88.57,224.75 L88.42,225.07 L88.34,225.49 L88.21,225.81 L87.99,226.15 L87.8,226.34 L87.46,226.6 L86.84,226.98 L86.6,227.23 L86.5,227.46 L86.25,227.88 L86.18,228.3 L86.19,228.75 L85.71,228.74 L85.27,228.68 L84.86,228.88 L84.31,228.93 L84.0,229.01 L83.65,229.17 L83.17,229.43 L82.76,229.63 L82.35,229.9 L82.06,230.03 L81.78,230.15 L81.38,230.3 L80.92,230.58 L80.5,230.76 L79.92,230.92 L79.39,230.9 L78.77,231.04 L78.39,231.2 L77.95,231.37 L77.48,231.32 L76.99,231.38 L76.68,231.54 L76.29,231.56 L75.9,231.71 L75.67,231.9 L75.27,232.01 L74.89,231.87 L74.02,231.9 L73.73,232.1 L73.22,232.19 L72.94,232.32 L72.55,231.76 L72.43,230.85 L71.65,229.06 L72.56,226.53 L73.29,224.3 L72.26,223.53 L72.87,223.26 L70.18,222.01 L69.96,221.11 L69.49,220.15 L69.73,219.31 L70.06,218.81 L70.44,217.95 L70.3,216.88 L70.33,216.04 L69.69,215.29 L69.84,214.45 L70.15,213.5 L70.35,212.13 L69.64,212.06 L68.63,212.5 L67.31,213.06 L66.04,213.02 L64.94,213.07 L63.64,213.08 L62.26,211.68 L60.17,210.87 L58.53,209.8 L56.15,208.94 L54.15,208.14 L52.94,203.92 L56.26,199.22 L58.19,197.65 L56.76,196.64 L57.93,194.83 L61.99,193.65 L66.13,187.95 L65.65,181.14 L69.97,181.71 L69.58,180.7 L68.9,178.26 L69.96,177.49 L72.06,175.7 L73.57,174.55 L79.43,174.58 L85.58,172.26 L90.04,166.82 L95.95,163.42 L96.1,158.12 L96.95,154.44 L98.87,150.99 L98.94,150.34 L99.09,149.25 L100.17,148.19 L101.14,147.02 L101.46,144.8 L89.91,136.35 L85.83,137.02 L80.48,136.8 L77.22,134.49 L76.28,129.84 L75.24,123.35 L77.13,121.04 L81.27,115.62 L80.25,104.39 L73.81,100.34 L66.66,92.61 L61.5,83.99 L67.08,83.88 L73.63,81.19 L79.01,79.71 L80.45,78.18 L82.81,75.59 L84.57,73.27 L58.67,66.39 L34.86,68.36 L37.88,61.46 L40.96,54.67 L43.46,50.08 L44.35,45.82 L47.91,39.81 L51.13,33.3 Z"/>
-          <text x="146.7" y="181.5" text-anchor="middle" class="mun-lbl">Leiria</text>
-<g id="mdot-batalha" class="mdot-g" data-name="Batalha" data-rcm="" transform="translate(128.53,217.2)"><circle r="13" class="mdot"/><text y="4" text-anchor="middle" class="mdot-lbl">Batalha</text></g>
-<g id="mdot-marinha" class="mdot-g" data-name="Marinha Grande" data-rcm="" transform="translate(58.02,160.34)"><circle r="13" class="mdot"/><text y="4" text-anchor="middle" class="mdot-lbl">M. Grande</text></g>
-<g id="mdot-pombal" class="mdot-g" data-name="Pombal" data-rcm="" transform="translate(263.91,48.84)"><circle r="13" class="mdot"/><text y="4" text-anchor="middle" class="mdot-lbl">Pombal</text></g>
+          <text x="150" y="135" text-anchor="middle" class="mun-lbl">Leiria</text>
           <g id="fires-g"></g>
         </svg>
       </div>
@@ -514,22 +528,23 @@ body.kiosk #kiosk-bar{display:flex}
         <div class="mleg"><div class="mleg-d" style="background:#e65100"></div>Elevado</div>
         <div class="mleg"><div class="mleg-d" style="background:#b71c1c"></div>M.Elev.</div>
         <div class="mleg"><div class="mleg-d" style="background:#880e4f"></div>Máx.</div>
-        <div class="mleg"><div class="mleg-d" style="background:#ef4444"></div>🔥 Activo</div>
+      </div>
+      <div class="fire-risk-row">
+        <div class="fb" id="fb-mun">
+          <div class="fsc">Município · Hoje</div>
+          <div class="fbdg pulse" id="fbdg-m">A carregar</div>
+          <div class="fd1"><span>Amanhã: </span><span class="fd1b" id="fd1-m">--</span></div>
+          <div class="fsrc"><div class="fsrc-d" id="fsrc-d-m"></div><span id="fsrc-t-m">--</span></div>
+        </div>
+        <div class="fb" id="fb-dist">
+          <div class="fsc">Distrito · Hoje</div>
+          <div class="fbdg pulse" id="fbdg-d">A carregar</div>
+          <div class="fd1"><span>Amanhã: </span><span class="fd1b" id="fd1-d">--</span></div>
+          <div class="fsrc"><div class="fsrc-d" id="fsrc-d-d"></div><span id="fsrc-t-d">--</span></div>
+        </div>
       </div>
     </div>
     <div id="fire-sb">
-      <div class="fb" id="fb-mun">
-        <div class="fsc">Município · Hoje</div>
-        <div class="fbdg pulse" id="fbdg-m">A carregar</div>
-        <div class="fd1"><span>Amanhã: </span><span class="fd1b" id="fd1-m">--</span></div>
-        <div class="fsrc"><div class="fsrc-d" id="fsrc-d-m"></div><span id="fsrc-t-m">--</span></div>
-      </div>
-      <div class="fb" id="fb-dist">
-        <div class="fsc">Distrito · Hoje</div>
-        <div class="fbdg pulse" id="fbdg-d">A carregar</div>
-        <div class="fd1"><span>Amanhã: </span><span class="fd1b" id="fd1-d">--</span></div>
-        <div class="fsrc"><div class="fsrc-d" id="fsrc-d-d"></div><span id="fsrc-t-d">--</span></div>
-      </div>
       <div id="mun-list">
 <div class="mli" id="mli-alcobaca"><span class="mli-dot">●</span><span class="mli-name">Alcobaça</span><span class="mli-badge" id="mlb-alcobaca">--</span></div>
 <div class="mli" id="mli-alvaiazere"><span class="mli-dot">●</span><span class="mli-name">Alvaiázere</span><span class="mli-badge" id="mlb-alvaiazere">--</span></div>
@@ -599,7 +614,7 @@ body.kiosk #kiosk-bar{display:flex}
 
 <script>
 const LAT=39.7436,LON=-8.8071,TZ='Europe/Lisbon';
-let countdown=300,windDirs7=[],_p7T=[],_p7L=[],_fT=[],_fL=[],kioskIdx=0,kioskTimer=null;
+let countdown=300,windHistory=[],_p7T=[],_p7L=[],_fT=[],_fL=[],kioskIdx=0,kioskTimer=null;
 
 const $=id=>document.getElementById(id);
 const fmt_t=iso=>new Date(iso).toLocaleTimeString('pt-PT',{hour:'2-digit',minute:'2-digit',timeZone:TZ});
@@ -727,29 +742,28 @@ function comfortIdx(t,h,w){
   if(h>80)return['🟡 Abafado','#ffc107','#1f1700'];
   return['🟢 Confortável','#4caf50','#0a1f0a'];}
 
-// Rosa dos ventos
-function drawRose(dirs){
-  const c=$('wr');if(!c||!dirs.length)return;
-  const wrap=$('wr-wrap'),sz=Math.min(wrap.offsetWidth||100,100);
-  c.width=sz;c.height=sz;
-  const ctx=c.getContext('2d'),cx=sz/2,cy=sz/2,R=sz/2-4;
-  ctx.clearRect(0,0,sz,sz);
-  const bins=new Array(16).fill(0);
-  dirs.forEach(d=>{bins[Math.round(d/22.5)%16]++;});
-  const mx=Math.max(...bins,1);
-  bins.forEach((cnt,i)=>{
-    if(cnt===0)return;
-    const angle=(i/16)*Math.PI*2-Math.PI/2,r=(cnt/mx)*R*.85,spread=Math.PI/16;
-    ctx.beginPath();ctx.moveTo(cx,cy);
-    ctx.arc(cx,cy,r,angle-spread,angle+spread);ctx.closePath();
-    ctx.fillStyle=`rgba(33,150,243,${0.3+0.7*(cnt/mx)})`;ctx.fill();});
-  [.33,.67,1].forEach(f=>{
-    ctx.beginPath();ctx.arc(cx,cy,R*f,0,Math.PI*2);
-    ctx.strokeStyle='rgba(30,64,80,.4)';ctx.lineWidth=.8;ctx.stroke();});
-  const fs=Math.max(8,sz/14);
-  ctx.fillStyle='#6a90a8';ctx.font=`${fs}px Segoe UI`;ctx.textAlign='center';
-  [['N',0],['E',Math.PI/2],['S',Math.PI],['O',-Math.PI/2]].forEach(([l,a])=>
-    ctx.fillText(l,cx+Math.sin(a)*(R+4),cy-Math.cos(a)*(R+4)+3));}
+// Histórico recente da velocidade do vento (últimas 24 horas)
+function drawWindHistory(points){
+  const c=$('wr');if(!c||points.length<2)return;
+  const W=c.offsetWidth||220,H=c.offsetHeight||82;
+  c.width=W;c.height=H;
+  const ctx=c.getContext('2d'),pad={t:8,r:5,b:17,l:24};
+  const vals=points.map(p=>p.value),mx=Math.max(10,Math.ceil(Math.max(...vals)/5)*5);
+  const x=i=>pad.l+i*(W-pad.l-pad.r)/(points.length-1);
+  const y=v=>H-pad.b-(v/mx)*(H-pad.t-pad.b);
+  ctx.clearRect(0,0,W,H);
+  ctx.strokeStyle='rgba(37,68,99,.65)';ctx.lineWidth=1;
+  [0,.5,1].forEach(f=>{const gy=y(mx*f);ctx.beginPath();ctx.moveTo(pad.l,gy);ctx.lineTo(W-pad.r,gy);ctx.stroke();});
+  const gradient=ctx.createLinearGradient(0,pad.t,0,H-pad.b);
+  gradient.addColorStop(0,'rgba(33,150,243,.35)');gradient.addColorStop(1,'rgba(33,150,243,0)');
+  ctx.beginPath();points.forEach((p,i)=>i?ctx.lineTo(x(i),y(p.value)):ctx.moveTo(x(i),y(p.value)));
+  ctx.lineTo(x(points.length-1),H-pad.b);ctx.lineTo(x(0),H-pad.b);ctx.closePath();ctx.fillStyle=gradient;ctx.fill();
+  ctx.beginPath();points.forEach((p,i)=>i?ctx.lineTo(x(i),y(p.value)):ctx.moveTo(x(i),y(p.value)));
+  ctx.strokeStyle='#42a5f5';ctx.lineWidth=2;ctx.lineJoin='round';ctx.stroke();
+  ctx.fillStyle='#7a9db8';ctx.font='8px Segoe UI';ctx.textAlign='right';ctx.fillText(mx+'',pad.l-3,pad.t+7);ctx.fillText('0',pad.l-3,H-pad.b+3);
+  ctx.textAlign='center';points.forEach((p,i)=>{if(i===0||i===points.length-1||i===Math.floor(points.length/2))ctx.fillText(p.label,x(i),H-3);});
+  const last=points.length-1;ctx.fillStyle='#e8f4fd';ctx.beginPath();ctx.arc(x(last),y(points[last].value),3,0,Math.PI*2);ctx.fill();
+}
 
 // Gráfico chuva
 function drawRain(labels,vals){
@@ -882,7 +896,7 @@ async function fetchWeather(){
     const url=`https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}`
       +`&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,`
       +`wind_speed_10m,wind_direction_10m,wind_gusts_10m,surface_pressure,dew_point_2m`
-      +`&hourly=temperature_2m,weather_code,precipitation_probability,wind_direction_10m`
+      +`&hourly=temperature_2m,weather_code,precipitation_probability,wind_direction_10m,wind_speed_10m`
       +`&daily=temperature_2m_max,temperature_2m_min,weather_code,sunrise,sunset,`
       +`precipitation_sum,uv_index_max`
       +`&past_days=7&timezone=${TZ}&forecast_days=6`;
@@ -923,6 +937,16 @@ async function fetchWeather(){
   $('wdir').textContent=wDir(c.wind_direction_10m);
   $('wneedle').setAttribute('transform',`rotate(${c.wind_direction_10m},60,60)`);
 
+  // Resumo automático do cabeçalho: estado atual + vento + chuva nas próximas 6 horas
+  const nextHours=d.hourly.time.reduce((list,t,i)=>{
+    const hour=new Date(t),ahead=(hour-new Date())/3600000;
+    if(ahead>=0&&ahead<=6)list.push(d.hourly.precipitation_probability[i]||0);
+    return list;},[]);
+  const rainSoon=Math.max(0,...nextHours);
+  const rainText=rainSoon>=50?`chuva provável (${Math.round(rainSoon)}%)`:
+    rainSoon>=20?`possibilidade de chuva (${Math.round(rainSoon)}%)`:'sem chuva prevista';
+  $('weather-summary').textContent=`${desc} · ${Math.round(c.temperature_2m)} °C · vento de ${wDir(c.wind_direction_10m)} ${Math.round(c.wind_speed_10m)} km/h · ${rainText}`;
+
   // Pressão
   $('pres').textContent=Math.round(c.surface_pressure);rp('pres');
   const pt=c.surface_pressure>1020?['⬆ Alta pressão','#4caf50']:
@@ -962,7 +986,7 @@ async function fetchWeather(){
 
   // Gráfico temperatura: passado 7 dias + próximas 24h
   const nowH=new Date();
-  windDirs7=[];
+  windHistory=[];
   const p7T=[],p7L=[],fut_t=[],fut_l=[];
   d.hourly.time.forEach((t,i)=>{
     const ht=new Date(t);
@@ -973,11 +997,11 @@ async function fetchWeather(){
         // Label: day abbreviation (e.g. "seg", "ter") for each point
         const dayLbl=new Date(t).toLocaleDateString('pt-PT',{weekday:'short',timeZone:TZ}).replace('.','');
         p7L.push(dayLbl);}
-      if(d.hourly.wind_direction_10m)windDirs7.push(d.hourly.wind_direction_10m[i]);
+      if(age<=24&&d.hourly.wind_speed_10m)windHistory.push({value:d.hourly.wind_speed_10m[i],label:fmt_t(t)});
     }else if(fut_t.length<24){fut_t.push(d.hourly.temperature_2m[i]);fut_l.push(fmt_t(t));}});
   _p7T=p7T;_p7L=p7L;_fT=fut_t;_fL=fut_l;
   drawTemp(p7T,p7L,fut_t,fut_l);
-  drawRose(windDirs7);
+  drawWindHistory(windHistory);
 
   // Previsão 5 dias
   const fc=$('fdays');fc.innerHTML='';
@@ -1233,7 +1257,7 @@ function toggleKiosk(){
 function showKCard(){
   KC.forEach((id,i)=>{$(id).classList.toggle('kiosk-on',i===kioskIdx);
     $('kd-'+i).classList.toggle('on',i===kioskIdx);});
-  setTimeout(()=>{drawTemp(_p7T,_p7L,_fT,_fL);drawRose(windDirs7);},100);}
+  setTimeout(()=>{drawTemp(_p7T,_p7L,_fT,_fL);drawWindHistory(windHistory);},100);}
 
 // QR
 function showQR(){
@@ -1266,8 +1290,8 @@ function toggleFS(){
   if(!document.fullscreenElement)
     document.documentElement.requestFullscreen().then(()=>{$('fs-btn').classList.add('on');$('fs-btn').textContent='✕ Sair';});
   else document.exitFullscreen().then(()=>{$('fs-btn').classList.remove('on');$('fs-btn').textContent='⛶ Ecrã inteiro';});}
-document.addEventListener('fullscreenchange',()=>setTimeout(()=>{drawTemp(_p7T,_p7L,_fT,_fL);drawRose(windDirs7);},200));
-window.addEventListener('resize',()=>setTimeout(()=>{drawTemp(_p7T,_p7L,_fT,_fL);drawRose(windDirs7);},100));
+document.addEventListener('fullscreenchange',()=>setTimeout(()=>{drawTemp(_p7T,_p7L,_fT,_fL);drawWindHistory(windHistory);},200));
+window.addEventListener('resize',()=>setTimeout(()=>{drawTemp(_p7T,_p7L,_fT,_fL);drawWindHistory(windHistory);},100));
 
 // Auto-ocultar botão de ecrã inteiro após alguns segundos, reaparece ao mexer no rato
 let fsHideTimer=null;
