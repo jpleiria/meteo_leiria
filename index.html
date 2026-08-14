@@ -28,12 +28,13 @@ body{display:flex;flex-direction:column}
 #weather-summary{font-size:.61rem;line-height:1.15;color:var(--text2);text-align:center;
   white-space:nowrap;margin-top:1px}
 #hdr>div:nth-child(2){flex:1;min-width:0}
+#hdr>div:last-child{position:relative}
 .hbtn{background:var(--bg3);border:1px solid var(--border2);color:var(--text2);
   padding:5px 10px;border-radius:6px;font-size:.75rem;cursor:pointer;transition:all .2s;white-space:nowrap}
 .hbtn:hover,.hbtn.on{background:var(--accent);color:#fff;border-color:var(--accent)}
 #fs-btn{transition:opacity .4s,visibility .4s}
 #fs-btn.fs-hidden{opacity:0;visibility:hidden;pointer-events:none}
-#fs-credit{display:none;font-size:.62rem;color:var(--text3);white-space:nowrap}
+#fs-credit{display:none;position:absolute;right:0;font-size:.62rem;color:var(--text3);white-space:nowrap}
 #fs-btn.fs-hidden + #fs-credit{display:inline}
 #upd-dot{width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;margin-right:4px;animation:blink 3s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
